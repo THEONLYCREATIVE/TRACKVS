@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,15 +5,16 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
     <title>Tracker Pro UAE/KWD — by Vysakh</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@800&family=DM+Sans:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Boots-inspired: Playfair for the classic heritage look, DM Sans for modern retail -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,800;1,800&family=DM+Sans:wght@700;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
             --teal: #4FC3F7; --tealD: #0277BD; 
             --amber: #FFB74D; 
-            --aura-bg: #C2185B; /* Solid pink/magenta from image.png */
+            --aura-bg: #C2185B;
             --bg: #0A0F5A; --card: rgba(255,255,255,.07); --border: rgba(255,255,255,.12);
-            --t1: #F2F2F2; --t2: #C8D0E8; --t3: #8892B8; --t4: #5A6490;
-            --sh: 0 4px 20px rgba(0,0,0,.4);
+            --t1: #FFFFFF; /* Forced White */
+            --t3: #FFFFFF; /* Forced White for labels */
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t1); overflow: hidden; height: 100dvh; }
@@ -22,84 +22,57 @@
         .main { flex: 1; overflow-y: auto; padding-bottom: 100px; }
 
         .hdr { padding: max(15px, env(safe-area-inset-top)) 20px 10px; background: var(--bg); }
-        .headline { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 800; }
+        /* Boots Script/Heritage Font Style */
+        .headline { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 800; font-style: italic; color: #FFFFFF; }
         .headline span { color: var(--amber); }
         
-        /* Top KPI Strip */
         .kpi-strip { 
             display: flex; gap: 8px; padding: 10px 20px; overflow-x: auto; 
             background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border);
             scrollbar-width: none;
         }
-        .kpi-strip::-webkit-scrollbar { display: none; }
-        .kpi-pill { 
-            background: var(--card); border: 1px solid var(--border); padding: 8px 12px; 
-            border-radius: 12px; flex-shrink: 0;
-        }
-        .kpi-pill-l { font-size: 9px; font-weight: 700; color: var(--t3); text-transform: uppercase; margin-bottom: 2px; }
+        .kpi-pill { background: var(--card); border: 1px solid var(--border); padding: 8px 12px; border-radius: 12px; flex-shrink: 0; }
+        /* White & Bold Labels */
+        .kpi-pill-l { font-size: 10px; font-weight: 900; color: #FFFFFF; text-transform: uppercase; margin-bottom: 2px; }
         .kpi-pill-v { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--teal); }
-        .kwd-tag { font-size: 9px; color: var(--amber); margin-left: 4px; font-weight: 800; }
+        .kwd-tag { font-size: 9px; color: var(--amber); margin-left: 4px; font-weight: 900; }
 
-        /* Grid System */
         .grid-compact { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px 20px; }
-        .entry-card { 
-            background: var(--card); border: 1.5px solid var(--border); border-radius: 18px; 
-            padding: 15px 12px; transition: 0.1s; position: relative;
-        }
+        .entry-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 18px; padding: 15px 12px; transition: 0.1s; position: relative; }
         
-        /* Aura Card - Filled as per image.png */
+        /* Aura Grid Matching image.png */
         .aura-grid { 
             background: linear-gradient(180deg, #D81B60 0%, #AD1457 100%) !important; 
             border: none !important;
             box-shadow: 0 4px 15px rgba(216, 27, 96, 0.3);
         }
-        .aura-grid .entry-label, .aura-grid .entry-val, .aura-grid .entry-kwd { 
-            color: #FFFFFF !important; 
-        }
 
         .entry-card:active { transform: scale(0.96); opacity: 0.8; }
         .entry-icon { font-size: 20px; margin-bottom: 6px; }
-        .entry-label { font-size: 11px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: 0.5px; }
-        .entry-val { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; margin-top: 2px; color: #fff; }
-        .entry-kwd { font-size: 11px; color: var(--amber); font-weight: 700; margin-top: 3px; display: block; }
+        /* White & Bold Entry Labels */
+        .entry-label { font-size: 11px; font-weight: 900; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.8px; }
+        .entry-val { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; margin-top: 2px; color: #FFFFFF; }
+        .entry-kwd { font-size: 11px; color: var(--amber); font-weight: 900; margin-top: 3px; display: block; }
 
-        /* Calculator Modal */
-        .modal { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
-            display: none; align-items: flex-end; z-index: 1000; 
-        }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; align-items: flex-end; z-index: 1000; }
         .modal.show { display: flex; }
-        .modal-content { 
-            background: #08104D; width: 100%; border-radius: 32px 32px 0 0; 
-            padding: 20px 24px max(30px, env(safe-area-inset-bottom)); border-top: 1px solid var(--border);
-        }
-        .calc-display { 
-            background: rgba(0,0,0,0.4); border-radius: 18px; padding: 20px; margin-bottom: 20px;
-            text-align: right; border: 1px solid var(--border);
-        }
-        .calc-formula { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--t4); min-height: 1.2em; margin-bottom: 4px; }
-        .calc-main { font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 700; color: #fff; }
-        
+        .modal-content { background: #08104D; width: 100%; border-radius: 32px 32px 0 0; padding: 20px 24px max(30px, env(safe-area-inset-bottom)); border-top: 1px solid var(--border); }
+        .calc-display { background: rgba(0,0,0,0.4); border-radius: 18px; padding: 20px; margin-bottom: 20px; text-align: right; border: 1px solid var(--border); }
+        .calc-formula { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: #FFFFFF; opacity: 0.6; min-height: 1.2em; margin-bottom: 4px; }
+        .calc-main { font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 700; color: #FFFFFF; }
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .calc-btn { 
-            height: 60px; border-radius: 16px; background: var(--card); color: #fff;
-            font-size: 22px; font-weight: 700; display: flex; align-items: center; justify-content: center;
-        }
+        .calc-btn { height: 60px; border-radius: 16px; background: var(--card); color: #FFFFFF; font-size: 22px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); }
         .calc-btn.op { background: var(--tealD); }
         .calc-btn.eq { background: var(--aura-bg); grid-column: span 2; }
 
-        .btn-save { 
-            background: linear-gradient(135deg, var(--teal), var(--tealD));
-            margin: 15px 20px; padding: 18px; border-radius: 18px; color: #fff;
-            font-weight: 800; text-align: center; font-size: 16px;
-        }
+        .btn-save { background: linear-gradient(135deg, var(--teal), var(--tealD)); margin: 15px 20px; padding: 18px; border-radius: 18px; color: #FFFFFF; font-weight: 900; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
 <div id="app">
     <div class="hdr">
-        <div class="headline">Boots <span>Performance</span></div>
+        <div class="headline">Boots <span>Pharmacy</span></div>
     </div>
 
     <div class="kpi-strip">
@@ -119,8 +92,8 @@
 <div class="modal" id="calc-modal">
     <div class="modal-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
-            <h3 id="modal-title" style="font-family:'Playfair Display'; color:var(--teal)">Entry</h3>
-            <button onclick="closeModal()" style="color:var(--t4); background:none; border:none; font-size:24px">✕</button>
+            <h3 id="modal-title" style="font-family:'Playfair Display'; color:#FFFFFF; font-style:italic">Entry</h3>
+            <button onclick="closeModal()" style="color:#FFFFFF; background:none; border:none; font-size:24px">✕</button>
         </div>
         <div class="calc-display">
             <div class="calc-formula" id="calc-formula"></div>
@@ -142,8 +115,8 @@
 
     const FIELDS = [
         { key: 'totalAED', label: 'Total Sales', icon: '💰', kwd: true },
-        { key: 'no7AED', label: 'No7 Sales', icon: '💎', kwd: true },
         { key: 'trn', label: 'Transactions', icon: '🧾' },
+        { key: 'no7AED', label: 'No7 Sales', icon: '💎', kwd: true },
         { key: 'totalItems', label: 'Units Sold', icon: '📦' },
         { key: 'footfall', label: 'Footfall', icon: '👣' },
         { key: 'auraTrn', label: 'Aura Enrolled', icon: '✨', isAura: true }
@@ -216,4 +189,3 @@
 </body>
 </html>
 
-```
