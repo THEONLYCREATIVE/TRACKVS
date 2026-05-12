@@ -3,29 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-    <title>Tracker Pro — by Vysakh</title>
+    <title>Tracker Pro UAE/KWD — by Vysakh</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0A0F5A">
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Playfair+Display:wght@800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@800&family=DM+Sans:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --teal: #4FC3F7; --tealD: #0277BD; --tealL: rgba(79,195,247,.1);
-            --amber: #FFB74D; --amberL: rgba(255,183,77,.1);
-            --pink: #F06292; --pinkL: rgba(240,98,146,.1);
-            --green: #66BB6A; --greenL: rgba(102,187,106,.1);
-            --bg: #0A0F5A; --card: rgba(255,255,255,.07); --border: rgba(255,255,255,.1);
+            --teal: #4FC3F7; --tealD: #0277BD; 
+            --amber: #FFB74D; 
+            --pink: #F06292; --pinkD: #D81B60;
+            --purple: #BA68C8; --purpleD: #7B1FA2;
+            --bg: #0A0F5A; --card: rgba(255,255,255,.07); --border: rgba(255,255,255,.12);
             --t1: #F2F2F2; --t2: #C8D0E8; --t3: #8892B8; --t4: #5A6490;
-            --sh: 0 4px 20px rgba(0,0,0,.3);
+            --sh: 0 4px 20px rgba(0,0,0,.4);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t1); overflow: hidden; height: 100dvh; }
-        
         #app { height: 100%; display: flex; flex-direction: column; }
-        .main { flex: 1; overflow-y: auto; padding-bottom: 100px; scroll-behavior: smooth; }
+        .main { flex: 1; overflow-y: auto; padding-bottom: 100px; }
 
         /* Header & Top Stats */
-        .hdr { padding: max(15px, env(safe-area-inset-top)) 20px 10px; background: var(--bg); z-index: 10; }
+        .hdr { padding: max(15px, env(safe-area-inset-top)) 20px 10px; background: var(--bg); }
         .headline { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 800; }
         .headline span { color: var(--amber); }
         
@@ -36,64 +33,63 @@
         }
         .kpi-strip::-webkit-scrollbar { display: none; }
         .kpi-pill { 
-            background: var(--card); border: 1px solid var(--border); padding: 6px 12px; 
-            border-radius: 12px; flex-shrink: 0; min-width: 80px;
+            background: var(--card); border: 1px solid var(--border); padding: 8px 12px; 
+            border-radius: 12px; flex-shrink: 0; position: relative;
         }
         .kpi-pill-l { font-size: 9px; font-weight: 700; color: var(--t3); text-transform: uppercase; margin-bottom: 2px; }
         .kpi-pill-v { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--teal); }
+        .kwd-tag { font-size: 9px; color: var(--amber); margin-left: 4px; font-weight: 800; }
 
-        /* Compact Grid */
-        .grid-compact { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 15px 20px; }
-        .aura-box { grid-column: span 3; background: var(--pinkL) !important; border-color: var(--pink) !important; }
+        /* Grid System */
+        .grid-compact { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px 20px; }
         .entry-card { 
-            background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; 
-            padding: 12px 8px; text-align: center; transition: 0.1s;
+            background: var(--card); border: 1.5px solid var(--border); border-radius: 18px; 
+            padding: 15px 12px; transition: 0.1s; position: relative;
         }
-        .entry-card:active { transform: scale(0.96); background: var(--border); }
-        .entry-icon { font-size: 18px; margin-bottom: 4px; }
-        .entry-label { font-size: 10px; font-weight: 700; color: var(--t3); text-transform: uppercase; }
-        .entry-val { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; margin-top: 2px; color: #fff; }
-        .entry-sub { font-size: 9px; color: var(--green); font-weight: 600; margin-top: 2px; }
+        .entry-card:active { transform: scale(0.96); background: rgba(255,255,255,0.15); }
+        
+        /* Aura / Special Grid Styling */
+        .aura-grid { 
+            background: rgba(186, 104, 200, 0.15) !important; 
+            border: 2px solid var(--purple) !important;
+        }
+        .aura-label { color: var(--purple) !important; font-weight: 800; }
+        
+        .entry-icon { font-size: 20px; margin-bottom: 6px; }
+        .entry-label { font-size: 11px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: 0.5px; }
+        .entry-val { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; margin-top: 2px; color: #fff; }
+        .entry-kwd { font-size: 11px; color: var(--amber); font-weight: 700; margin-top: 3px; display: block; }
 
         /* Calculator Modal */
         .modal { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
             display: none; align-items: flex-end; z-index: 1000; 
         }
         .modal.show { display: flex; }
         .modal-content { 
-            background: #0C1A78; width: 100%; border-radius: 30px 30px 0 0; 
-            padding: 20px 24px max(30px, env(safe-area-inset-bottom));
+            background: #08104D; width: 100%; border-radius: 32px 32px 0 0; 
+            padding: 20px 24px max(30px, env(safe-area-inset-bottom)); border-top: 1px solid var(--border);
         }
         .calc-display { 
-            background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin-bottom: 15px;
+            background: rgba(0,0,0,0.4); border-radius: 18px; padding: 20px; margin-bottom: 20px;
             text-align: right; border: 1px solid var(--border);
         }
-        .calc-formula { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--t4); min-height: 1.2em; }
-        .calc-main { font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 700; color: #fff; }
+        .calc-formula { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--t4); min-height: 1.2em; margin-bottom: 4px; }
+        .calc-main { font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 700; color: #fff; }
         
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
         .calc-btn { 
-            height: 60px; border-radius: 15px; background: var(--card); color: #fff;
-            font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+            height: 64px; border-radius: 16px; background: var(--card); color: #fff;
+            font-size: 22px; font-weight: 700; display: flex; align-items: center; justify-content: center;
         }
         .calc-btn.op { background: var(--tealD); }
-        .calc-btn.eq { background: var(--green); grid-column: span 2; }
-        .calc-btn:active { opacity: 0.7; }
-
-        /* Nav */
-        .nav { 
-            position: fixed; bottom: 0; width: 100%; background: rgba(10,15,90,0.9); 
-            backdrop-filter: blur(10px); display: flex; padding: 10px 0 max(10px, env(safe-area-inset-bottom));
-            border-top: 1px solid var(--border);
-        }
-        .nav-item { flex: 1; text-align: center; color: var(--t4); font-size: 10px; font-weight: 700; }
-        .nav-item.on { color: var(--teal); }
+        .calc-btn.eq { background: var(--purple); grid-column: span 2; }
+        .calc-btn:active { opacity: 0.6; transform: scale(0.95); }
 
         .btn-save { 
             background: linear-gradient(135deg, var(--teal), var(--tealD));
-            margin: 10px 20px; padding: 16px; border-radius: 15px; color: #fff;
-            font-weight: 800; text-align: center; box-shadow: var(--sh);
+            margin: 15px 20px; padding: 18px; border-radius: 18px; color: #fff;
+            font-weight: 800; text-align: center; box-shadow: var(--sh); font-size: 16px;
         }
     </style>
 </head>
@@ -101,40 +97,44 @@
 
 <div id="app">
     <div class="hdr">
-        <div class="headline">Boots <span>Tracker</span></div>
+        <div class="headline">Boots <span>Performance</span></div>
     </div>
 
-    <!-- Live KPI Summary (Top Level) -->
+    <!-- Top KPI Strip with KWD and Percentages -->
     <div class="kpi-strip" id="kpi-strip">
-        <div class="kpi-pill"><div class="kpi-pill-l">ATV</div><div class="kpi-pill-v" id="k-atv">0.00</div></div>
-        <div class="kpi-pill"><div class="kpi-pill-l">IPC</div><div class="kpi-pill-v" id="k-ipc">0.00</div></div>
-        <div class="kpi-pill"><div class="kpi-pill-l">CVR</div><div class="kpi-pill-v" id="k-cvr">0.0%</div></div>
-        <div class="kpi-pill"><div class="kpi-pill-l">No7 %</div><div class="kpi-pill-v" id="k-no7">0.0%</div></div>
-        <div class="kpi-pill"><div class="kpi-pill-l">AURA</div><div class="kpi-pill-v" id="k-aura">0.0%</div></div>
+        <div class="kpi-pill">
+            <div class="kpi-pill-l">ATV (AED)</div>
+            <div class="kpi-pill-v"><span id="k-atv">0.00</span><span class="kwd-tag" id="k-atv-kwd">0.0 KWD</span></div>
+        </div>
+        <div class="kpi-pill">
+            <div class="kpi-pill-l">IPC</div>
+            <div class="kpi-pill-v" id="k-ipc">0.00</div>
+        </div>
+        <div class="kpi-pill">
+            <div class="kpi-pill-l">No7 Share</div>
+            <div class="kpi-pill-v" id="k-no7">0.0%</div>
+        </div>
+        <div class="kpi-pill">
+            <div class="kpi-pill-l">CVR</div>
+            <div class="kpi-pill-v" id="k-cvr">0.0%</div>
+        </div>
     </div>
 
     <div class="main">
-        <!-- Compact Input Grid -->
         <div class="grid-compact" id="input-grid">
-            <!-- Dynamic Content via JS -->
+            <!-- Dynamic Grid Items -->
         </div>
 
-        <div class="btn-save" onclick="saveData()">✓ SAVE DAILY SALES</div>
+        <div class="btn-save" onclick="saveData()">✓ FINISH & SAVE REPORT</div>
     </div>
-
-    <nav class="nav">
-        <div class="nav-item on">🏠<br>Home</div>
-        <div class="nav-item">📂<br>History</div>
-        <div class="nav-item">⚙️<br>Settings</div>
-    </nav>
 </div>
 
 <!-- Calculator Modal -->
 <div class="modal" id="calc-modal">
     <div class="modal-content">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
-            <h3 id="modal-title" style="font-family:'Playfair Display'">Entry</h3>
-            <button onclick="closeModal()" style="color:var(--t3); background:none; border:none; font-size:20px">✕</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
+            <h3 id="modal-title" style="font-family:'Playfair Display'; color:var(--teal)">Entry</h3>
+            <button onclick="closeModal()" style="color:var(--t4); background:none; border:none; font-size:24px">✕</button>
         </div>
         <div class="calc-display">
             <div class="calc-formula" id="calc-formula"></div>
@@ -158,7 +158,7 @@
             
             <div class="calc-btn" onclick="press('0')">0</div>
             <div class="calc-btn" onclick="press('.')">.</div>
-            <div class="calc-btn eq" onclick="press('=')">DONE (=)</div>
+            <div class="calc-btn eq" onclick="press('=')">SAVE (=)</div>
         </div>
     </div>
 </div>
@@ -167,59 +167,60 @@
     let currentKey = '';
     let formula = '';
     let data = {
-        totalAED: 0, trn: 0, no7AED: 0, no7Focus: 0, totalItems: 0, footfall: 0, aura: 0
+        totalAED: 0, trn: 0, no7AED: 0, totalItems: 0, footfall: 0, auraTrn: 0
     };
 
     const FIELDS = [
-        { key: 'totalAED', label: 'Sales', icon: '💰', color: 'var(--teal)' },
-        { key: 'trn', label: 'TRN', icon: '🧾', color: 'var(--teal)' },
-        { key: 'totalItems', label: 'Units', icon: '📦', color: 'var(--teal)' },
-        { key: 'no7AED', label: 'No7 AED', icon: '💎', color: 'var(--green)', sub: true },
-        { key: 'no7Focus', label: 'No7 Pcs', icon: '🎯', color: 'var(--green)' },
-        { key: 'footfall', label: 'Walk-ins', icon: '👣', color: 'var(--teal)' },
-        { key: 'aura', label: 'AURA ENROLLED', icon: '✨', color: 'var(--pink)', aura: true }
+        { key: 'totalAED', label: 'Total Sales', icon: '💰', kwd: true },
+        { key: 'no7AED', label: 'No7 Sales', icon: '💎', kwd: true },
+        { key: 'trn', label: 'Transactions', icon: '🧾' },
+        { key: 'totalItems', label: 'Units Sold', icon: '📦' },
+        { key: 'footfall', label: 'Footfall', icon: '👣' },
+        { key: 'auraTrn', label: 'Aura Linked', icon: '✨', isAura: true }
     ];
 
     function renderGrid() {
         let html = '';
         FIELDS.forEach(f => {
             const val = data[f.key] || 0;
-            let subText = '';
+            const kwdVal = f.kwd ? (val / 12).toFixed(2) : null;
             
-            // Auto Percentages
-            if (f.key === 'no7AED' && data.totalAED > 0) {
-                let pct = ((data.no7AED / data.totalAED) * 100).toFixed(1);
-                subText = `<div class="entry-sub">${pct}% of total</div>`;
-            } else if (f.aura && data.trn > 0) {
-                let pct = ((data.aura / data.trn) * 100).toFixed(1);
-                subText = `<div class="entry-sub">${pct}% conversion</div>`;
-            }
-
             html += `
-                <div class="entry-card ${f.aura ? 'aura-box' : ''}" onclick="openModal('${f.key}', '${f.label}')">
+                <div class="entry-card ${f.isAura ? 'aura-grid' : ''}" onclick="openModal('${f.key}', '${f.label}')">
                     <div class="entry-icon">${f.icon}</div>
-                    <div class="entry-label">${f.label}</div>
+                    <div class="entry-label ${f.isAura ? 'aura-label' : ''}">${f.label}</div>
                     <div class="entry-val">${Number(val).toLocaleString()}</div>
-                    ${subText}
+                    ${f.kwd ? `<span class="entry-kwd">${kwdVal} KWD</span>` : ''}
                 </div>
             `;
         });
+
+        // Add the Auto-Calculated Aura Percentage Grid (Non-clickable)
+        const auraPct = data.trn > 0 ? ((data.auraTrn / data.trn) * 100).toFixed(1) : '0.0';
+        html += `
+            <div class="entry-card aura-grid">
+                <div class="entry-icon">📊</div>
+                <div class="entry-label aura-label">Aura Rate</div>
+                <div class="entry-val">${auraPct}%</div>
+                <span class="entry-kwd" style="color:var(--purple)">Of Total TRN</span>
+            </div>
+        `;
+
         document.getElementById('input-grid').innerHTML = html;
         updateKPIs();
     }
 
     function updateKPIs() {
-        const atv = data.trn > 0 ? (data.totalAED / data.trn).toFixed(2) : '0.00';
+        const atv = data.trn > 0 ? (data.totalAED / data.trn) : 0;
         const ipc = data.trn > 0 ? (data.totalItems / data.trn).toFixed(2) : '0.00';
         const cvr = data.footfall > 0 ? ((data.trn / data.footfall) * 100).toFixed(1) : '0.0';
         const no7p = data.totalAED > 0 ? ((data.no7AED / data.totalAED) * 100).toFixed(1) : '0.0';
-        const auraP = data.trn > 0 ? ((data.aura / data.trn) * 100).toFixed(1) : '0.0';
 
-        document.getElementById('k-atv').innerText = atv;
+        document.getElementById('k-atv').innerText = atv.toFixed(2);
+        document.getElementById('k-atv-kwd').innerText = (atv / 12).toFixed(2) + " KWD";
         document.getElementById('k-ipc').innerText = ipc;
         document.getElementById('k-cvr').innerText = cvr + '%';
         document.getElementById('k-no7').innerText = no7p + '%';
-        document.getElementById('k-aura').innerText = auraP + '%';
     }
 
     function openModal(key, label) {
@@ -256,8 +257,8 @@
         } else {
             formula += val;
             main.innerText = formula;
-            // Real-time calculation for the "line in top"
             try {
+                // Show current sum preview in the top line
                 let temp = eval(formula.replace(/[+\-]$/, ""));
                 formDisp.innerText = temp !== undefined ? "= " + temp : "";
             } catch(e) {}
@@ -265,15 +266,12 @@
     }
 
     function saveData() {
-        localStorage.setItem('boots_data', JSON.stringify(data));
-        alert("Sales Data Saved Locally!");
+        alert("Daily Sales Report Generated!\nATV: " + (data.totalAED / data.trn || 0).toFixed(2) + " AED");
     }
 
-    // Init
     renderGrid();
 </script>
 </body>
 </html>
 
 ```
-
