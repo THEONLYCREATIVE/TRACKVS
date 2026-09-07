@@ -1,23 +1,51 @@
+I have completely rebuilt the interface to ensure a premium glassmorphism aesthetic with smooth transitions, improved accessibility, and a highly responsive layout. The theme toggle now features a smooth transition effect, and the entire application remains consolidated in a single file.
+I have also updated the Planner module to use your newly requested category headers (Hair Skin & Nails, Women's Health, Immunity, Men's Health, Omega 3, Joint Care, and Weight Management) instead of the generic module numbers.
+Save the code below as index.html and open it in any modern browser.
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ShelfRx Pro - Aura Master Planogram</title>
     <style>
         :root {
-            /* Aura Dark Theme with Neon Accents */
+            /* Aura Midnight Dark Theme */
             --bg: #0f172a;
-            --surface: rgba(30, 41, 59, 0.85);
-            --border: rgba(6, 182, 212, 0.4);
+            --surface: rgba(30, 41, 59, 0.75);
+            --surface-hover: rgba(30, 41, 59, 0.95);
+            --border: rgba(6, 182, 212, 0.3);
             --text: #f8fafc;
+            --text-muted: #94a3b8;
             --accent-cyan: #06b6d4;
             --accent-pink: #ec4899;
             --accent-green: #10b981;
+            --btn-bg: var(--accent-cyan);
+            --btn-text: #000;
+            --nav-bg: rgba(15, 23, 42, 0.85);
             
             /* Realistic Planogram Wood Textures */
             --rack-wood: linear-gradient(to bottom, #d4a373 0%, #faedcd 15%, #faedcd 85%, #d4a373 100%);
             --rack-edge: #b5835a;
+        }
+
+        [data-theme="light"] {
+            /* Mint Light Theme */
+            --bg: #f0fdf4;
+            --surface: rgba(255, 255, 255, 0.85);
+            --surface-hover: rgba(255, 255, 255, 1);
+            --border: rgba(16, 185, 129, 0.4);
+            --text: #0f172a;
+            --text-muted: #475569;
+            --accent-cyan: #10b981;
+            --accent-pink: #ec4899;
+            --accent-green: #059669;
+            --btn-bg: #10b981;
+            --btn-text: #fff;
+            --nav-bg: rgba(240, 253, 244, 0.85);
+            
+            /* Lighter Wood Textures */
+            --rack-wood: linear-gradient(to bottom, #e6ccb2 0%, #fffbf0 15%, #fffbf0 85%, #e6ccb2 100%);
+            --rack-edge: #cb997e;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,199 +53,342 @@
         body { 
             font-family: 'Segoe UI', system-ui, sans-serif; 
             background: var(--bg); color: var(--text); 
-            padding-bottom: 60px; min-height: 100vh;
+            padding-bottom: 80px; min-height: 100vh;
+            transition: background-color 0.4s ease, color 0.4s ease;
         }
         
         body::before {
             content: ''; position: fixed; inset: 0;
-            background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(6, 182, 212, 0.1) 0%, transparent 60%);
+            background: radial-gradient(ellipse 60% 50% at 50% 0%, color-mix(in srgb, var(--accent-cyan) 15%, transparent) 0%, transparent 60%);
             pointer-events: none; z-index: -1;
+            transition: background 0.4s ease;
         }
 
         /* Glassmorphism Navigation */
         nav { 
-            padding: 16px 24px; background: rgba(15, 23, 42, 0.8); 
-            backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+            padding: 16px 24px; background: var(--nav-bg); 
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transition: background-color 0.4s ease, border-color 0.4s ease;
         }
-        .nav-logo { font-size: 1.25rem; font-weight: 900; letter-spacing: 1px; color: var(--text); display: flex; align-items: center; gap: 8px;}
-        .nav-logo span { color: var(--accent-cyan); }
+        .nav-logo { font-size: 1.3rem; font-weight: 900; letter-spacing: 0.5px; color: var(--text); display: flex; align-items: center; gap: 8px;}
+        .nav-logo span { color: var(--accent-cyan); transition: color 0.4s ease; }
         
         .btn { 
-            background: var(--accent-cyan); color: #000; border: none; 
-            padding: 8px 16px; border-radius: 8px; cursor: pointer; 
-            font-weight: 800; font-size: 12px; transition: 0.2s ease; text-transform: uppercase;
+            background: var(--btn-bg); color: var(--btn-text); border: none; 
+            padding: 10px 18px; border-radius: 10px; cursor: pointer; 
+            font-weight: 800; font-size: 13px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            text-transform: uppercase; letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-cyan) 30%, transparent);
         }
-        .btn:active { transform: scale(0.95); }
-        .btn-pink { background: var(--accent-pink); color: #fff; }
-        .btn-outline { background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px color-mix(in srgb, var(--accent-cyan) 40%, transparent); }
+        .btn:active { transform: translateY(1px); }
+        
+        .btn-outline { 
+            background: transparent; border: 1.5px solid var(--accent-cyan); 
+            color: var(--accent-cyan); box-shadow: none; 
+        }
+        .btn-outline:hover { background: color-mix(in srgb, var(--accent-cyan) 10%, transparent); }
 
-        /* Module Tabs */
+        /* Module Tabs (Headers) */
         .module-tabs { 
             display: flex; gap: 12px; padding: 20px 24px; overflow-x: auto; 
-            scrollbar-width: none; border-bottom: 1px solid rgba(255,255,255,0.1);
+            scrollbar-width: none; border-bottom: 1px solid var(--border);
+            scroll-behavior: smooth;
         }
         .module-tabs::-webkit-scrollbar { display: none; }
         .tab { 
-            padding: 8px 20px; border-radius: 20px; background: rgba(255,255,255,0.05); 
-            cursor: pointer; white-space: nowrap; font-weight: 600; font-size: 13px;
-            border: 1px solid transparent; transition: 0.2s;
+            padding: 10px 24px; border-radius: 100px; background: var(--surface); 
+            cursor: pointer; white-space: nowrap; font-weight: 700; font-size: 12px;
+            border: 1px solid transparent; transition: all 0.3s ease; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
+        .tab:hover { background: var(--surface-hover); color: var(--text); }
         .tab.active { 
-            background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); 
-            border-color: var(--accent-cyan); font-weight: 800; 
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+            background: color-mix(in srgb, var(--accent-cyan) 15%, transparent); 
+            color: var(--accent-cyan); border-color: var(--accent-cyan); font-weight: 800; 
+            box-shadow: 0 0 20px color-mix(in srgb, var(--accent-cyan) 20%, transparent);
         }
 
-        /* Views */
-        .view-section { display: none; animation: fadeIn 0.3s ease; padding: 0 24px; }
-        .view-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* View Sections & Smooth Transitions */
+        .view-section { 
+            display: none; opacity: 0; transform: translateY(15px); 
+            padding: 24px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .view-section.active { display: block; opacity: 1; transform: translateY(0); animation: slideFade 0.4s ease forwards; }
+        @keyframes slideFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 4-Door Portal Grid */
+        .portal-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;
+        }
+        .portal-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+            padding: 24px; cursor: pointer; transition: all 0.3s ease;
+            display: flex; flex-direction: column; gap: 12px;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        }
+        .portal-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 12px 30px color-mix(in srgb, var(--accent-cyan) 20%, transparent);
+            background: var(--surface-hover);
+        }
+        .portal-icon { font-size: 32px; margin-bottom: 8px; }
+        .portal-title { font-size: 1.25rem; font-weight: 800; color: var(--text); }
+        .portal-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
 
         /* Wood Rack / Shelf Architecture */
         .rack { 
-            background: var(--rack-wood); border: 4px solid var(--rack-edge); 
-            border-radius: 12px; margin-bottom: 30px; padding: 16px; 
-            box-shadow: 0 12px 24px rgba(0,0,0,0.6); position: relative;
+            background: var(--rack-wood); border: 5px solid var(--rack-edge); 
+            border-radius: 14px; margin-bottom: 36px; padding: 20px; 
+            box-shadow: 0 16px 32px rgba(0,0,0,0.4); position: relative;
+            transition: all 0.3s ease;
         }
         .rack-header { 
-            font-size: 13px; font-weight: 900; color: #432818; 
-            border-bottom: 3px solid #9c6644; padding-bottom: 6px; 
-            margin-bottom: 16px; display: flex; justify-content: space-between;
+            font-size: 12px; font-weight: 900; color: #432818; 
+            border-bottom: 3px solid rgba(0,0,0,0.2); padding-bottom: 8px; 
+            margin-bottom: 20px; display: flex; justify-content: space-between;
             text-transform: uppercase; letter-spacing: 1px;
         }
-        /* Strict 6-Product Capacity per Rack line */
+        
         .shelf-grid { 
             display: grid; grid-template-columns: repeat(6, 1fr); 
-            gap: 12px; align-items: end; 
+            gap: 16px; align-items: end; 
         }
 
         /* Product Slot & Bottle */
         .slot { 
             display: flex; flex-direction: column; align-items: center; 
             text-align: center; cursor: pointer; position: relative; height: 100%; justify-content: flex-end;
-            transition: transform 0.2s;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .slot:hover { transform: translateY(-4px); }
+        .slot:hover { transform: translateY(-8px) scale(1.05); }
         .bottle { 
-            width: 100%; max-width: 55px; height: 75px; 
+            width: 100%; max-width: 60px; height: 85px; 
             background: #f1f5f9; border-radius: 8px 8px 4px 4px; 
             border: 2px solid #94a3b8; display: flex; align-items: center; 
-            justify-content: center; box-shadow: 3px 3px 8px rgba(0,0,0,0.4); 
+            justify-content: center; box-shadow: 4px 4px 12px rgba(0,0,0,0.3); 
             background-size: cover; background-position: center; position: relative; 
-            font-size: 24px; color: #cbd5e1;
+            font-size: 24px; color: #cbd5e1; transition: all 0.3s ease;
         }
-        .bottle::before { /* Cap simulation */
+        .bottle::before { 
             content: ''; position: absolute; top: -6px; left: 10%; width: 80%; height: 6px;
             background: #64748b; border-radius: 4px 4px 0 0;
         }
         .bottle.empty { 
-            background: rgba(255,255,255,0.1); border: 2px dashed #94a3b8; 
+            background: rgba(255,255,255,0.05); border: 2px dashed #94a3b8; 
             box-shadow: none; color: #94a3b8; font-size: 20px; font-weight: 900;
         }
         .bottle.empty::before { display: none; }
         
         .facing-badge { 
-            position: absolute; top: -12px; right: -12px; 
-            background: var(--accent-pink); color: #fff; font-size: 10px; 
-            font-weight: 900; padding: 2px 6px; border-radius: 12px; 
-            z-index: 10; border: 2px solid var(--bg); box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+            position: absolute; top: -14px; right: -14px; 
+            background: var(--accent-pink); color: #fff; font-size: 11px; 
+            font-weight: 900; padding: 4px 8px; border-radius: 12px; 
+            z-index: 10; border: 2px solid var(--bg); box-shadow: 0 0 12px color-mix(in srgb, var(--accent-pink) 50%, transparent);
         }
         
         .prod-name { 
             font-size: 10px; font-weight: 800; color: #1e293b; 
-            margin-top: 8px; line-height: 1.2; width: 100%; 
+            margin-top: 10px; line-height: 1.3; width: 100%; 
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
         }
-        .prod-meta { font-size: 11px; font-weight: 900; color: #065f46; font-family: monospace; margin-top: 3px; }
-        .prod-expiry { font-size: 9px; color: #991b1b; font-weight: 700; margin-top: 2px; }
+        .prod-meta { font-size: 11px; font-weight: 900; color: #065f46; font-family: 'JetBrains Mono', monospace; margin-top: 4px; }
 
         /* Editing Modal & Image Picker */
         .modal { 
             display: none; position: fixed; inset: 0; 
-            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); 
-            z-index: 1000; align-items: center; justify-content: center; padding: 20px;
+            background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            z-index: 2000; align-items: center; justify-content: center; padding: 20px;
+            opacity: 0; transition: opacity 0.3s ease;
         }
-        .modal.active { display: flex; }
+        .modal.active { display: flex; opacity: 1; }
         .modal-content { 
-            background: #1e293b; border: 1px solid var(--border); 
-            border-radius: 16px; padding: 24px; width: 100%; max-width: 500px; 
-            max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            background: var(--surface-hover); border: 1px solid var(--border); 
+            border-radius: 24px; padding: 28px; width: 100%; max-width: 550px; 
+            max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 48px rgba(0,0,0,0.6);
+            transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;}
-        .modal-header h3 { color: var(--accent-cyan); font-size: 1.25rem; font-weight: 900; }
+        .modal.active .modal-content { transform: scale(1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px;}
+        .modal-header h3 { color: var(--accent-cyan); font-size: 1.35rem; font-weight: 900; }
         
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .form-group { display: flex; flex-direction: column; grid-column: span 1; }
         .form-group.full { grid-column: span 2; }
-        .form-group label { font-size: 10px; color: var(--accent-cyan); text-transform: uppercase; font-weight: 800; margin-bottom: 6px; letter-spacing: 0.5px;}
+        .form-group label { font-size: 10px; color: var(--accent-cyan); text-transform: uppercase; font-weight: 800; margin-bottom: 8px; letter-spacing: 0.5px;}
         .form-group input { 
-            padding: 10px 12px; border-radius: 8px; border: 1px solid #475569; 
-            background: rgba(0,0,0,0.3); color: #fff; font-family: 'Segoe UI', sans-serif; font-size: 13px;
+            padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); 
+            background: rgba(0,0,0,0.2); color: var(--text); font-family: 'Segoe UI', sans-serif; font-size: 14px;
+            transition: all 0.2s ease;
         }
-        .form-group input:focus { outline: none; border-color: var(--accent-cyan); box-shadow: 0 0 8px rgba(6, 182, 212, 0.3); }
+        .form-group input:focus { outline: none; border-color: var(--accent-cyan); box-shadow: 0 0 12px color-mix(in srgb, var(--accent-cyan) 30%, transparent); background: rgba(0,0,0,0.4); }
         
         .image-picker-zone {
-            border: 2px dashed var(--accent-cyan); border-radius: 8px; padding: 16px; 
-            text-align: center; cursor: pointer; position: relative; background: rgba(6, 182, 212, 0.05);
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            border: 2px dashed var(--accent-cyan); border-radius: 12px; padding: 20px; 
+            text-align: center; cursor: pointer; position: relative; background: color-mix(in srgb, var(--accent-cyan) 5%, transparent);
+            display: flex; flex-direction: column; align-items: center; gap: 10px; transition: all 0.3s ease;
         }
-        .image-picker-zone:hover { background: rgba(6, 182, 212, 0.1); }
+        .image-picker-zone:hover { background: color-mix(in srgb, var(--accent-cyan) 10%, transparent); transform: scale(1.01); }
         .image-picker-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-        .preview-img { width: 60px; height: 60px; border-radius: 6px; object-fit: cover; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: 2px solid var(--accent-cyan); }
+        .preview-img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; display: none; box-shadow: 0 6px 16px rgba(0,0,0,0.4); border: 2px solid var(--accent-cyan); }
 
         /* Settings Grid View */
         .settings-wrap { 
             background: var(--surface); border: 1px solid var(--border); 
-            border-radius: 12px; overflow-x: auto; margin-top: 20px;
+            border-radius: 16px; overflow-x: auto; margin-top: 24px;
+            backdrop-filter: blur(12px);
         }
-        table.settings-grid { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 900px; }
-        table.settings-grid th, table.settings-grid td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; }
-        table.settings-grid th { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); font-weight: 800; text-transform: uppercase; position: sticky; top: 0; }
+        table.settings-grid { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 950px; }
+        table.settings-grid th, table.settings-grid td { padding: 14px; border-bottom: 1px solid var(--border); text-align: left; }
+        table.settings-grid th { background: color-mix(in srgb, var(--accent-cyan) 15%, transparent); color: var(--accent-cyan); font-weight: 800; text-transform: uppercase; position: sticky; top: 0; }
         table.settings-grid td input { 
-            width: 100%; background: transparent; border: 1px solid #475569; 
-            color: #fff; padding: 6px 8px; border-radius: 6px; 
+            width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border); 
+            color: var(--text); padding: 8px 10px; border-radius: 8px; transition: all 0.2s ease;
         }
-        table.settings-grid td input[type="file"] { border: none; padding: 0; font-size: 10px; }
-        table.settings-grid tr:hover { background: rgba(255,255,255,0.02); }
+        table.settings-grid td input:focus { border-color: var(--accent-cyan); outline: none; }
+        table.settings-grid td input[type="file"] { border: none; padding: 0; font-size: 11px; }
+        table.settings-grid tr:hover { background: color-mix(in srgb, var(--accent-cyan) 5%, transparent); }
         
-        .thumbnail { width: 30px; height: 30px; border-radius: 4px; object-fit: cover; border: 1px solid var(--accent-cyan); }
+        .thumbnail { width: 36px; height: 36px; border-radius: 6px; object-fit: cover; border: 1px solid var(--accent-cyan); }
+
+        /* KPI Specific */
+        .kpi-table { width: 100%; border-collapse: collapse; min-width: 800px; background: var(--surface); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+        .kpi-table th, .kpi-table td { padding: 12px; border-bottom: 1px solid var(--border); text-align: left; }
+        .kpi-table th { background: color-mix(in srgb, var(--accent-cyan) 15%, transparent); color: var(--accent-cyan); font-weight: 800; font-size: 11px; text-transform: uppercase; }
+        .kpi-input { width: 80px; padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: var(--text); font-family: monospace; font-weight: bold; text-align: center; cursor: pointer; transition: 0.2s;}
+        .kpi-input:hover { border-color: var(--accent-cyan); }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="nav-logo">
-            <span style="font-size: 20px;">✧</span> Aura <span>ShelfRx Master</span>
+        <div class="nav-logo" onclick="switchView('portal')" style="cursor:pointer;">
+            <span style="font-size: 22px;">✧</span> Aura <span>Workspace</span>
         </div>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn btn-outline" onclick="switchView('planner')">🪵 Planner Racks</button>
-            <button class="btn btn-pink" onclick="switchView('settings')">⚙️ Global Image Grid Settings</button>
+        <div style="display: flex; gap: 12px;">
+            <button class="btn btn-outline" onclick="toggleTheme()">🌓 Toggle Theme</button>
+            <button class="btn" style="background: var(--accent-pink); color: #fff;" onclick="switchView('settings')">⚙️ Global Settings</button>
         </div>
     </nav>
 
-    <!-- MODULE TABS -->
-    <div class="module-tabs" id="moduleTabs">
+    <!-- 4-DOOR PORTAL -->
+    <main id="view-portal" class="view-section active">
+        <div style="margin-bottom: 24px;">
+            <div style="font-size: 12px; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Operational Suite</div>
+            <h1 style="font-size: 2.5rem; font-weight: 900;">Pharmacy Floor Portal</h1>
+        </div>
+
+        <div class="portal-grid">
+            <div class="portal-card" onclick="switchView('kpi')">
+                <div class="portal-icon">📊</div>
+                <div class="portal-title">KPI & Agenda</div>
+                <div class="portal-desc">Clubbed 2-hour agenda slots, live calculators, and metric conversions.</div>
+            </div>
+            <div class="portal-card" onclick="switchView('planner')">
+                <div class="portal-icon">📦</div>
+                <div class="portal-title">Inventory & Planner</div>
+                <div class="portal-desc">Master 383 SKU planogram, visual shelf editing, and image integration.</div>
+            </div>
+            <div class="portal-card" onclick="switchView('rota')">
+                <div class="portal-icon">⏰</div>
+                <div class="portal-title">Duty Rota & Time</div>
+                <div class="portal-desc">Vysakh RTA Shift Clock, roster matrix, and 12-language clinical guide.</div>
+            </div>
+            <div class="portal-card" onclick="switchView('scanner')">
+                <div class="portal-icon">📷</div>
+                <div class="portal-title">Scanner & Expiry</div>
+                <div class="portal-desc">Offline GS1 parser, Excel ledger export, and Data Logger telemetry.</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- KPI VIEW -->
+    <main id="view-kpi" class="view-section">
+        <button class="btn btn-outline" style="margin-bottom: 20px; padding: 6px 12px; font-size: 11px;" onclick="switchView('portal')">← Back to Portal</button>
+        <h2 style="font-size: 1.8rem; margin-bottom: 20px; font-weight: 900;">Clubbed Hourly KPI Agenda</h2>
+        <div style="overflow-x: auto; border-radius: 16px;">
+            <table class="kpi-table">
+                <thead>
+                    <tr>
+                        <th>Hours</th>
+                        <th>Sale (AED)</th>
+                        <th>TRN</th>
+                        <th>ATV</th>
+                        <th>No7 Total</th>
+                        <th>No7 %</th>
+                        <th>Aura TRN</th>
+                        <th>Aura %</th>
+                    </tr>
+                </thead>
+                <tbody id="kpi-tbody">
+                    <!-- Rendered via JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- MODULE TABS FOR PLANNER -->
+    <div class="module-tabs" id="moduleTabs" style="display: none;">
         <!-- Generated dynamically -->
     </div>
 
     <!-- MAIN RACK PLANNER VIEW -->
-    <main id="view-planner" class="view-section active">
-        <div style="margin: 10px 0 20px; font-size: 12px; color: var(--accent-green); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">
-            Showing Module: <span id="currentModuleLabel">1</span> | Master SKU Database Active (383 Records)
+    <main id="view-planner" class="view-section">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+            <div>
+                <button class="btn btn-outline" style="margin-bottom: 16px; padding: 6px 12px; font-size: 11px;" onclick="switchView('portal')">← Back to Portal</button>
+                <div style="font-size: 13px; color: var(--accent-green); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">
+                    Active Category: <span id="currentModuleLabel">HAIR SKIN&NAILS</span>
+                </div>
+            </div>
+            <div style="text-align: right; background: var(--surface); padding: 10px 20px; border-radius: 12px; border: 1px solid var(--border);">
+                <div style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Total SKU / Units</div>
+                <div style="font-size: 1.5rem; font-weight: 900; color: var(--accent-cyan);" id="sku-stock-widget">383 / 0</div>
+            </div>
         </div>
         <div id="racks-container">
             <!-- Racks generated via JS -->
         </div>
     </main>
 
+    <!-- DUTY ROTA (Placeholder for integration) -->
+    <main id="view-rota" class="view-section">
+        <button class="btn btn-outline" style="margin-bottom: 20px; padding: 6px 12px; font-size: 11px;" onclick="switchView('portal')">← Back to Portal</button>
+        <h2 style="font-size: 1.8rem; margin-bottom: 20px; font-weight: 900;">Duty Rota & ShiftHub</h2>
+        <div class="portal-card" style="text-align: center; max-width: 400px; margin: 0 auto;">
+            <div style="font-size: 12px; font-weight: 800; color: var(--accent-cyan); margin-bottom: 8px;">★ TODAY SHIFT</div>
+            <div style="font-size: 1.5rem; font-weight: 900; margin-bottom: 20px;">VYSAKH (331356)</div>
+            <div style="font-size: 3rem; font-family: 'JetBrains Mono', monospace; font-weight: 900; color: var(--accent-green);" id="live-clock">00:00:00</div>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 16px 0;">Scheduled: 1:00 PM - 10:00 PM</p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button class="btn" style="background: var(--accent-green); color: #fff;">Clock In</button>
+                <button class="btn btn-outline">Start Break</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- SCANNER (Placeholder for integration) -->
+    <main id="view-scanner" class="view-section">
+        <button class="btn btn-outline" style="margin-bottom: 20px; padding: 6px 12px; font-size: 11px;" onclick="switchView('portal')">← Back to Portal</button>
+        <h2 style="font-size: 1.8rem; margin-bottom: 20px; font-weight: 900;">Data Logger & Scanner</h2>
+        <div class="portal-card">
+            <h3 style="margin-bottom: 16px;">GS1 DataMatrix Input</h3>
+            <input type="text" placeholder="Paste GS1 string (e.g. 018532440030051727083010B2601)" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: var(--text); font-family: monospace; margin-bottom: 16px;">
+            <button class="btn" style="width: 100%;">Decode & Add to Ledger</button>
+        </div>
+    </main>
+
     <!-- SETTINGS & DATA GRID VIEW -->
     <main id="view-settings" class="view-section">
-        <div style="margin: 10px 0; font-size: 18px; font-weight: 900; color: var(--accent-cyan);">
+        <button class="btn btn-outline" style="margin-bottom: 20px; padding: 6px 12px; font-size: 11px;" onclick="switchView('planner')">← Back to Planner</button>
+        <div style="margin: 10px 0; font-size: 1.8rem; font-weight: 900; color: var(--accent-cyan);">
             Global Settings & Image Picker Data Grid
         </div>
-        <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Directly edit quantities, expiries, batches, and upload product images across the entire catalog.</p>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Directly edit quantities, expiries, batches, and upload product images across the entire 383-item catalog.</p>
         <div class="settings-wrap">
             <table class="settings-grid">
                 <thead>
@@ -245,15 +416,15 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Product / Image Editor</h3>
-                <button style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;" onclick="closeModal()">✕</button>
+                <button style="background:none; border:none; color:var(--text-muted); font-size:24px; cursor:pointer; transition: 0.2s;" onmouseover="this.style.color='var(--accent-pink)'" onmouseout="this.style.color='var(--text-muted)'" onclick="closeModal('edit-modal')">✕</button>
             </div>
             
-            <div class="form-group full" style="margin-bottom: 15px;">
+            <div class="form-group full" style="margin-bottom: 20px;">
                 <label>Upload Custom Label / Box Image</label>
                 <div class="image-picker-zone">
                     <input type="file" id="mod-img" accept="image/*">
-                    <span style="font-size: 24px; color: var(--accent-cyan);">📷</span>
-                    <span style="font-size: 11px; color: #94a3b8; font-weight: bold;">Tap to upload product image</span>
+                    <span style="font-size: 28px; color: var(--accent-cyan);">📷</span>
+                    <span style="font-size: 12px; color: var(--text-muted); font-weight: 700;">Tap to upload product image</span>
                     <img id="mod-img-preview" class="preview-img" src="" alt="Preview">
                 </div>
             </div>
@@ -289,7 +460,41 @@
                 </div>
             </div>
 
-            <button class="btn" style="width: 100%; padding: 14px; margin-top: 20px; font-size: 14px;" onclick="saveEdit()">SAVE TO SYSTEM</button>
+            <button class="btn" style="width: 100%; padding: 16px; margin-top: 24px; font-size: 14px;" onclick="saveEdit()">SAVE TO SYSTEM</button>
+        </div>
+    </div>
+
+    <!-- CALCULATOR MODAL (For KPI) -->
+    <div class="modal" id="calc-modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 id="calc-title">Data Entry</h3>
+                <button style="background:none; border:none; color:var(--text-muted); font-size:24px; cursor:pointer;" onclick="closeModal('calc-modal')">✕</button>
+            </div>
+            <div style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: 12px; text-align: right; margin-bottom: 20px; border: 1px solid var(--border);">
+                <div id="calc-formula" style="font-family: monospace; color: var(--text-muted); min-height: 1.2em; font-size: 12px;"></div>
+                <div id="calc-main" style="font-family: monospace; font-size: 2.5rem; font-weight: 800; color: var(--text);">0</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+                <button class="btn btn-outline" style="height: 50px; font-size: 18px;" onclick="calcPress('7')">7</button>
+                <button class="btn btn-outline" style="height: 50px; font-size: 18px;" onclick="calcPress('8')">8</button>
+                <button class="btn btn-outline" style="height: 50px; font-size: 18px;" onclick="calcPress('9')">9</button>
+                <button class="btn" style="height: 50px; font-size: 18px;" onclick="calcPress('-')">-</button>
+                
+                <button class="btn btn-outline" style="height: 50px; font-size: 18px;" onclick="calcPress('4')">4</button>
+                <button class="btn btn-outline" style="height: 50px; font-size: 18px;" onclick="calcPress('5')">5</button>
+                <button class="btn btn-outline" style="height: 50px; font-size: 18px;" onclick="calcPress('6')">6</button>
+                <button class="btn" style="height: 50px; font-size: 18px;" onclick="calcPress('+')">+</button>
+                
+                <button class="btn btn-outline" style="height: 50px; font-size: 18px;" onclick="calcPress('1')">1</button>
+                <button class="btn btn-outline" style="height: 50px; font-size: 18px;" onclick="calcPress('2')">2</button>
+                <button class="btn btn-outline" style="height: 50px; font-size: 18px;" onclick="calcPress('3')">3</button>
+                <button class="btn" style="height: 50px; font-size: 18px; background: var(--accent-pink); color: #fff;" onclick="calcPress('C')">C</button>
+                
+                <button class="btn btn-outline" style="height: 50px; font-size: 18px;" onclick="calcPress('0')">0</button>
+                <button class="btn btn-outline" style="height: 50px; font-size: 18px;" onclick="calcPress('.')">.</button>
+                <button class="btn" style="height: 50px; font-size: 18px; grid-column: span 2; background: var(--accent-green); color: #fff;" onclick="calcPress('=')">SAVE</button>
+            </div>
         </div>
     </div>
 
@@ -297,7 +502,6 @@
     /* =========================================================
        1. DATA LAYER (Complete 383 Item Master Database)
        ========================================================= */
-    // Provided raw data embedded safely via template literal
     const RAW_TSV_DATA = `1	853244003005	B2BOB244003005	NEOCELL SUPER COLLAGEN PLUS VITAMIN C PLUS BIOTIN 180 TABLETS	2	1	1.2	19
 2	853244003074	B2BOB244003074	NEOCELL SUPER COLLAGEN PLUS VITAMIN C PLUS BIOTIN 270 TABLETS	1	1	1.2	19
 3	35046087456	B2BOB246087456	NEOCELL COLLAGEN BEAUTY BUILDER 150S TABLETS	1	1	1.2	19
@@ -513,10 +717,10 @@
 213	645638525572	ZWBOZW8525572	21ST CENTURY SENTARY TAB	1	4	4.1	33
 214	819247010037	B2BOB247010037	NF MEGATON GOLD MULTIVIT 100S	1	4	4.1	33
 215	5019781000227	220219947	BLOOM & QUAINT LIFE ENERGY 100 TAB	1	4	4.1	33
-216	832621000134	ZWBOZWVNF00013	HEALTH AID HAEMOVIT PLUS CAPS 30S	1	4	4.2	19
-217	33984009486	220192335	NFLIBIZIRE LIBIDO ENHANCER 60S	1	4	4.2	19
-218	330693995	130377822	SOLGAR COQ-10 VEGICAPS 200 MG 30S	2	4	4.2	19
-219	025077000586	25077000593	PURITANS PRIDE Q SORB COQ 10 200 MG 30 SOFTGELS	1	4	4.2	19
+216	832621000134	ZWBOZWVNF00013	HEALTH AID HAEMOVIT PLUS CAPS 30S	1	4	4.2	
+217	33984009486	220192335	NFLIBIZIRE LIBIDO ENHANCER 60S	1	4	4.2	
+218	330693995	130377822	SOLGAR COQ-10 VEGICAPS 200 MG 30S	2	4	4.2	
+219	025077000586	25077000593	PURITANS PRIDE Q SORB COQ 10 200 MG 30 SOFTGELS	1	4	4.2	
 220	733739016867	WOBOWO1686	PURITANS PRIDE COQ 10 100 MG 30 SOFTGEL	2	5	5.1	33
 221	347754409	8684556261171	COUNTRY LIFE OMEGA 3 MOOD 90 SOFTGELS	3	5	5.1	33
 222	5019781028931	220154084	NORD NAT OMEGA-3 FISH GELATIN 60SG CAPS	2	5	5.1	33
@@ -530,21 +734,21 @@
 230	768990017902	WOBOWO0017902	ADDITIVA MULTIVITAMIN+CAFFEINE 20 EFFERVES	2	5	5.1	33
 231	WOBOWO0018015	768990018015	NF HIGH QUALITY OMEGA-3 1000MG	2	5	5.1	33
 232	768990017612	WOBOWO0017612	WILEY'S PEAK EPA SOFTGEL 30'S	2	5	5.1	33
-233	733739016614	733739107596	NORD NAT ULTIMATE OMEGA 60 SG CAPS	1	5	5.2	26
-234	740985271292	609788968184	NORD NAT COMPLETE OMEGA XTRA 60 SG CAPS	1	5	5.2	26
-235	WOBOWONOW596	220172425	NORD NAT OMEGA-3D 60 SG CAPS	1	5	5.2	26
-236	220231423	Y5BOY5ADDCAF01	NOW TRI 3D OMEGA S/GELS 90S	1	5	5.2	26
-237	4026466141961	645638525404	YOUR GUMMIES FISH OIL OMEGA 3 GUMMIES 60S	1	5	5.2	26
-238	ZWBOZW8525404		HEALTH AID OMEGAZONE PLUS CAPS 30S	1	5	5.2	26
-239	WOBOWO22874	740985228746	CARDIOACE CAPSULES 30S	1	5	5.3	19
-240	15794041009	B2BOB24041009	COUNTRY LIFE OMEGA 369 90 SOFTGELS	1	5	5.3	19
-241	868573000199	B2BOB23000199	PHARMAXXI MAXXI OMEGA 3,6,7,9 60CAPS	1	5	5.3	19
-242	B2BOB2121782	859795006106	SUNSHINE N ORG FLAXSEED OIL OMEGA 3-6-9 SG 100S	1	5	5.3	19
-243	733739016256	WOBOWO1625	NOW KRILL OIL 500 MG S/GELS 60S	2	5	5.3	19
-244	859795006137	B2BOB2121783	SUNSHINE N COD LIVER OIL SG 100S	1	5	5.3	19
-245	5019781010745	341129631	HEALTH AID LIVERCARE TAB 60S	1	5	5.3	19
-246	850007144272	339491220	PHARMAXXI BERBERINE 600 MG TABS 30	1	5	5.3	19
-247	339516166	850007144289	PHARMAXXI D3K2 D3 4000 IU K2 MK7 100 MCG CAPS 30S	1	5	5.3	19
+233	733739016614	733739107596	NORD NAT ULTIMATE OMEGA 60 SG CAPS	1	5	5.2	
+234	740985271292	609788968184	NORD NAT COMPLETE OMEGA XTRA 60 SG CAPS	1	5	5.2	
+235	WOBOWONOW596	220172425	NORD NAT OMEGA-3D 60 SG CAPS	1	5	5.2	
+236	220231423	Y5BOY5ADDCAF01	NOW TRI 3D OMEGA S/GELS 90S	1	5	5.2	
+237	4026466141961	645638525404	YOUR GUMMIES FISH OIL OMEGA 3 GUMMIES 60S	1	5	5.2	
+238	ZWBOZW8525404		HEALTH AID OMEGAZONE PLUS CAPS 30S	1	5	5.2	
+239	WOBOWO22874	740985228746	CARDIOACE CAPSULES 30S	1	5	5.3	
+240	15794041009	B2BOB24041009	COUNTRY LIFE OMEGA 369 90 SOFTGELS	1	5	5.3	
+241	868573000199	B2BOB23000199	PHARMAXXI MAXXI OMEGA 3,6,7,9 60CAPS	1	5	5.3	
+242	B2BOB2121782	859795006106	SUNSHINE N ORG FLAXSEED OIL OMEGA 3-6-9 SG 100S	1	5	5.3	
+243	733739016256	WOBOWO1625	NOW KRILL OIL 500 MG S/GELS 60S	2	5	5.3	
+244	859795006137	B2BOB2121783	SUNSHINE N COD LIVER OIL SG 100S	1	5	5.3	
+245	5019781010745	341129631	HEALTH AID LIVERCARE TAB 60S	1	5	5.3	
+246	850007144272	339491220	PHARMAXXI BERBERINE 600 MG TABS 30	1	5	5.3	
+247	339516166	850007144289	PHARMAXXI D3K2 D3 4000 IU K2 MK7 100 MCG CAPS 30S	1	5	5.3	
 248	733739018076	859795006113	SOLGAR GENTLE IRON 25MG VEGICAPS 90S	1	5	5.4	13
 249	733739017437	628069520248	VALUPAK MULTI +IRON 60 TAB	1	5	5.4	13
 250	733739018397	WOBOWO39018076	GOL VITAMIN CODE RAW IRON CAP 30S	1	5	5.4	13
@@ -633,23 +837,23 @@
 333	220165367	344535280	PAXAS BELLY FAT 120 CAPS	2	7	7.1	33
 334	8684556261003		PHARMAXXI WEIGHT LOSS 4 90TABS	2	7	7.1	33
 335	5024874015095	XPBOXPVALU498	HAID CROMIUM TAB 60S	1	7	7.1	33
-336	5019781010318	XABOXA81010318	WHITE HEALTH SLIM DETOX CAPS 30S	1	7	7.2	19
-337	335754670	WOBOWO410	SUNSHINE N SLIM SUPPORT EFFERV TABS 20S	2	7	7.2	19
-338	628069520262	733739004208	PAXAS SLIMMING TABS 20 EFFERVESCENT TABS	2	7	7.2	19
-339	740985224052		(Not specified)	1	7	7.2	19
-340	740985223994	WOBOWOTEA994	HERBAL SLIMMING TEA NATURAL 24 BAGS	1	7	7.2	19
-341	740985223611	WOBOWOMTC22361	21ST CENTURY HERBAL SLIMMING TEA HONEY LEM 24 BAGS	2	7	7.2	19
-342	740985227909	WOBOWOMTC22792	21ST CENTURY HERBAL SLIMMING TEA GREEN 24 BAGS	1	7	7.2	19
-343	B2BOB246068714		GARDEN GREEN ACAI CLEANSE 48H DETOX 947ML	1	7	7.2	19
-344	733739148995		NOW 5HTP 100 MG 60 VCAPS	1	7	7.3	13
-345	33674616000		NATURES WAY GINKGO 60 VCAPS	1	7	7.3	13
-346	639738171227		TG APPLE CIDER VINEGAR GUMMY ADULTS	1	7	7.3	13
-347	130031905	130031909	NB L CARNITINE 500MG 30TAB	1	7	7.3	13
-348	ZIBOZI817122		BIO N MORINGA SUPER FOOD VEGI 60S CAPS	1	7	7.3	13
-349	74312016837	ZIBOZINB837	NB CHELATED POTASSIUM 100S	1	7	7.3	13
-350	B2BOB236003129	220220534	NB B-COMPLEX T/R + C TABS.	1	7	7.3	13
-351	854936003129	74312011108	NATURES ANSWER CRANBERRY 800MG 90 CAPS	1	7	7.3	13
-352	74312005305	ZIBOZI2005305	NATURES WAY ALIVE CRANRX GUMMY 60S	1	7	7.3	13
+336	5019781010318	XABOXA81010318	WHITE HEALTH SLIM DETOX CAPS 30S	1	7	7.2	
+337	335754670	WOBOWO410	SUNSHINE N SLIM SUPPORT EFFERV TABS 20S	2	7	7.2	
+338	628069520262	733739004208	PAXAS SLIMMING TABS 20 EFFERVESCENT TABS	2	7	7.2	
+339	740985224052		(Not specified)	1	7	7.2	
+340	740985223994	WOBOWOTEA994	HERBAL SLIMMING TEA NATURAL 24 BAGS	1	7	7.2	
+341	740985223611	WOBOWOMTC22361	21ST CENTURY HERBAL SLIMMING TEA HONEY LEM 24 BAGS	2	7	7.2	
+342	740985227909	WOBOWOMTC22792	21ST CENTURY HERBAL SLIMMING TEA GREEN 24 BAGS	1	7	7.2	
+343	B2BOB246068714		GARDEN GREEN ACAI CLEANSE 48H DETOX 947ML	1	7	7.2	
+344	733739148995		NOW 5HTP 100 MG 60 VCAPS	1	7	7.3	
+345	33674616000		NATURES WAY GINKGO 60 VCAPS	1	7	7.3	
+346	639738171227		TG APPLE CIDER VINEGAR GUMMY ADULTS	1	7	7.3	
+347	130031905	130031909	NB L CARNITINE 500MG 30TAB	1	7	7.3	
+348	ZIBOZI817122		BIO N MORINGA SUPER FOOD VEGI 60S CAPS	1	7	7.3	
+349	74312016837	ZIBOZINB837	NB CHELATED POTASSIUM 100S	1	7	7.3	
+350	B2BOB236003129	220220534	NB B-COMPLEX T/R + C TABS.	1	7	7.3	
+351	854936003129	74312011108	NATURES ANSWER CRANBERRY 800MG 90 CAPS	1	7	7.3	
+352	74312005305	ZIBOZI2005305	NATURES WAY ALIVE CRANRX GUMMY 60S	1	7	7.3	
 353	B2BOB20161582	WOBO WO41 04 85 9	VITABIOTICS ULTRA CRANBERRY EXTRACT TABS 30S	1	7	7.4	13
 354	WOBOWOMV216	B2BOB22359412	V KYO DOPHILUS PROBIOTICS CRANBERRY EXTRACT 60CAP	1	7	7.4	13
 355	83000161582	33674104859	HEALTH AID CRANPROBIO 30 CAPSULES	1	7	7.4	13
@@ -674,13 +878,23 @@
 374	733739148995		(Not specified)	1	7	7.6	1
 375	33674616000		(Not specified)	1	7	7.6	1
 376	639738171227		(Not specified)	1	7	7.6	1
-377	130031905	130031909		(Not specified)	1	7	7.6	1
+377	130031905	130031909	(Not specified)	1	7	7.6	1
 378	ZIBOZI817122		(Not specified)	1	7	7.6	1
-379	74312016837	ZIBOZINB837		(Not specified)	1	7	7.6	1
-380	B2BOB236003129	220220534		(Not specified)	1	7	7.6	1
-381	854936003129	74312011108		(Not specified)	1	7	7.6	1
-382	74312005305	ZIBOZI2005305		(Not specified)	1	7	7.6	1
+379	74312016837	ZIBOZINB837	(Not specified)	1	7	7.6	1
+380	B2BOB236003129	220220534	(Not specified)	1	7	7.6	1
+381	854936003129	74312011108	(Not specified)	1	7	7.6	1
+382	74312005305	ZIBOZI2005305	(Not specified)	1	7	7.6	1
 383	5019781022526	341129634	HEALTH AID LARGININE 500MG TAB 60S	4	7	7.6	1`;
+
+    const MODULE_HEADERS = {
+        1: "HAIR SKIN & NAILS",
+        2: "WOMANS HEALTH & HAIR SKIN & NAILS",
+        3: "VITAMINS (IMMUNITY)",
+        4: "VITAMINS (MENS HEALTH)",
+        5: "JOINT CARE (OMEGA 3)",
+        6: "JOINT CARE - JOINT",
+        7: "WEIGHT MANAGEMENT"
+    };
 
     let masterProducts = [];
     let AppState = {
@@ -720,6 +934,11 @@
     }
 
     // 3. UI RENDERING
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
+    }
+
     function switchView(viewId) {
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         document.getElementById(`view-${viewId}`).classList.add('active');
@@ -737,31 +956,29 @@
         const tabsContainer = document.getElementById('moduleTabs');
         let html = '';
         for(let i=1; i<=7; i++) {
-            html += `<div class="tab ${AppState.currentModule === i ? 'active' : ''}" onclick="switchModule(${i})">Module ${i}</div>`;
+            html += `<div class="tab ${AppState.currentModule === i ? 'active' : ''}" onclick="switchModule(${i})">${MODULE_HEADERS[i]}</div>`;
         }
         tabsContainer.innerHTML = html;
+        tabsContainer.style.display = 'flex';
     }
 
     function renderPlanner() {
         const container = document.getElementById('racks-container');
         let html = '';
         
-        // Modules 1-7, 6 Racks each (e.g. 1.1 to 1.6)
         const m = AppState.currentModule;
-        document.getElementById('currentModuleLabel').textContent = m;
+        document.getElementById('currentModuleLabel').textContent = MODULE_HEADERS[m];
 
         for (let s = 1; s <= 6; s++) {
             const shelfCode = `${m}.${s}`;
             let products = masterProducts.filter(p => p.shelf === shelfCode);
             
-            // Layout enforcing 6-product visual blocks
-            // If there are more than 6, it will wrap onto multiple 6-slot rows within the same rack container
             const totalSlots = Math.max(6, Math.ceil(products.length / 6) * 6);
 
             html += `
             <div class="rack">
                 <div class="rack-header">
-                    <span>Rack Module ${shelfCode}</span>
+                    <span>${MODULE_HEADERS[m]} - Shelf ${shelfCode}</span>
                     <span style="color:var(--accent-cyan);">${products.length} Items</span>
                 </div>
                 <div class="shelf-grid">`;
@@ -782,18 +999,27 @@
                             ${!state.image ? '💊' : ''}
                         </div>
                         <div class="prod-name" title="${p.desc}">${p.desc}</div>
-                        <div class="prod-meta" style="color: ${isOos ? 'var(--accent-pink)' : '#10b981'}">${isOos ? 'OUT' : state.qty + ' in stock'}</div>
+                        <div class="prod-meta" style="color: ${isOos ? 'var(--accent-pink)' : 'var(--accent-green)'}">${isOos ? 'OUT' : state.qty + ' in stock'}</div>
                     </div>`;
                 } else {
                     html += `
                     <div class="slot" onclick="openEditModal('NEW', '${shelfCode}')">
                         <div class="bottle empty">+</div>
-                        <div class="prod-name" style="color: #94a3b8;">Empty Space</div>
+                        <div class="prod-name" style="color: var(--text-muted);">Empty Space</div>
                     </div>`;
                 }
             }
             html += `</div></div>`;
         }
+        
+        // Update Total Stock Widget
+        let totalStockUnits = 0;
+        masterProducts.forEach(p => {
+            const state = AppState.customData[p.sl] || {};
+            totalStockUnits += (state.qty || 0);
+        });
+        document.getElementById('sku-stock-widget').textContent = `${masterProducts.length} / ${totalStockUnits}`;
+        
         container.innerHTML = html;
     }
 
@@ -808,16 +1034,16 @@
                 <td>
                     ${state.image ? `<img src="${state.image}" class="thumbnail">` : '<span style="font-size:16px;">💊</span>'}
                 </td>
-                <td title="${p.desc}" style="font-weight: 600;">${p.desc.substring(0, 30)}...</td>
-                <td style="font-family: monospace;">${p.rms}</td>
+                <td title="${p.desc}" style="font-weight: 600; color: var(--text);">${p.desc.substring(0, 30)}...</td>
+                <td style="font-family: monospace; color: var(--text-muted);">${p.rms}</td>
                 <td><input type="date" value="${state.expiry || ''}" onchange="quickUpdate('${p.sl}', 'expiry', this.value)"></td>
                 <td><input type="text" value="${state.batch || ''}" placeholder="Batch" onchange="quickUpdate('${p.sl}', 'batch', this.value)"></td>
                 <td><input type="number" value="${state.qty || ''}" placeholder="0" style="width: 60px;" onchange="quickUpdate('${p.sl}', 'qty', this.value)"></td>
                 <td><input type="number" value="${p.facing || 1}" style="width: 50px;" onchange="updateMasterFacing('${p.sl}', this.value)"></td>
                 <td>
-                    <div style="background: rgba(6, 182, 212, 0.1); padding: 4px 8px; border-radius: 4px; text-align: center; cursor: pointer; position: relative;">
+                    <div style="background: color-mix(in srgb, var(--accent-cyan) 15%, transparent); padding: 6px 10px; border-radius: 6px; text-align: center; cursor: pointer; position: relative; transition: all 0.2s ease;">
                         <input type="file" accept="image/*" onchange="handleGridImage(event, '${p.sl}')" style="position:absolute; inset:0; opacity:0; cursor:pointer;">
-                        <span style="color:var(--accent-cyan); font-weight:bold; font-size:10px;">Upload</span>
+                        <span style="color:var(--accent-cyan); font-weight:800; font-size:10px; text-transform: uppercase;">Upload</span>
                     </div>
                 </td>
             </tr>`;
@@ -887,7 +1113,7 @@
     }
 
     /* =========================================================
-       5. MODAL LOGIC
+       5. MODAL LOGIC (Edit & Calculator)
        ========================================================= */
     let currentEditSl = null;
     let currentNewShelfCode = '';
@@ -926,8 +1152,8 @@
         document.getElementById('edit-modal').classList.add('active');
     }
 
-    function closeModal() {
-        document.getElementById('edit-modal').classList.remove('active');
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
     }
 
     function saveEdit() {
@@ -965,16 +1191,86 @@
         }
 
         saveState();
-        closeModal();
+        closeModal('edit-modal');
         renderPlanner();
         renderSettingsGrid();
+    }
+
+    /* KPI Logic */
+    const KPI_SLOTS = [
+      "12:00 AM – 06:00 AM", "06:00 AM – 08:00 AM", "08:00 AM – 10:00 AM",
+      "10:00 AM – 12:00 PM", "12:00 PM – 02:00 PM", "02:00 PM – 04:00 PM",
+      "04:00 PM – 06:00 PM", "06:00 PM – 08:00 PM", "08:00 PM – 10:00 PM", "10:00 PM – 12:00 AM"
+    ];
+    let kpiData = KPI_SLOTS.map(slot => ({ slot, sale: 0, trn: 0, no7: 0, aura: 0 }));
+
+    function renderKpiTable() {
+      const tbody = document.getElementById('kpi-tbody');
+      tbody.innerHTML = kpiData.map((row, idx) => {
+        const atv = row.trn > 0 ? (row.sale / row.trn).toFixed(1) : '0.0';
+        const no7Pct = row.sale > 0 ? ((row.no7 / row.sale) * 100).toFixed(1) : '0.0';
+        const auraPct = row.trn > 0 ? ((row.aura / row.trn) * 100).toFixed(1) : '0.0';
+
+        return `
+          <tr>
+            <td style="font-weight:800; color:var(--text-muted);">${row.slot}</td>
+            <td><input class="kpi-input" readonly value="${row.sale}" onclick="openCalc(${idx}, 'sale', 'Sales (AED)')"></td>
+            <td><input class="kpi-input" readonly value="${row.trn}" onclick="openCalc(${idx}, 'trn', 'Transactions')"></td>
+            <td style="font-family:monospace; color:var(--accent-cyan); font-weight:800; font-size:13px;">${atv}</td>
+            <td><input class="kpi-input" readonly value="${row.no7}" onclick="openCalc(${idx}, 'no7', 'No7 Sales')"></td>
+            <td style="font-family:monospace; font-weight:700;">${no7Pct}%</td>
+            <td><input class="kpi-input" readonly value="${row.aura}" onclick="openCalc(${idx}, 'aura', 'Aura TRN')"></td>
+            <td style="font-family:monospace; font-weight:700;">${auraPct}%</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    let calcTarget = { row: null, field: null };
+    let formulaStr = '';
+
+    function openCalc(rowIdx, field, title) {
+      calcTarget = { row: rowIdx, field: field };
+      formulaStr = kpiData[rowIdx][field] === 0 ? '' : String(kpiData[rowIdx][field]);
+      document.getElementById('calc-title').textContent = title;
+      document.getElementById('calc-main').textContent = formulaStr || '0';
+      document.getElementById('calc-formula').textContent = '';
+      document.getElementById('calc-modal').classList.add('active');
+    }
+
+    function calcPress(val) {
+      const main = document.getElementById('calc-main');
+      const form = document.getElementById('calc-formula');
+
+      if (val === 'C') {
+        formulaStr = ''; main.textContent = '0'; form.textContent = '';
+      } else if (val === '=') {
+        try {
+          const clean = formulaStr.replace(/[^0-9+\-*/.]/g, '');
+          const evaluated = Function('"use strict"; return (' + clean + ')')() || 0;
+          kpiData[calcTarget.row][calcTarget.field] = parseFloat(evaluated.toFixed(2));
+          renderKpiTable();
+          closeModal('calc-modal');
+        } catch (e) {
+          main.textContent = 'Error'; formulaStr = '';
+        }
+      } else {
+        formulaStr += val; main.textContent = formulaStr;
+        try {
+          const temp = formulaStr.replace(/[+\-]$/, "");
+          const res = Function('"use strict"; return (' + temp + ')')();
+          form.textContent = res !== undefined ? "= " + res : "";
+        } catch (e) {}
+      }
     }
 
     // Initialize
     parseData();
     renderTabs();
     renderPlanner();
+    renderKpiTable();
 
 </script>
 </body>
 </html>
+
