@@ -2,190 +2,979 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-    <title>Tracker Pro UAE/KWD — by Vysakh</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <!-- Boots-inspired: Playfair for the classic heritage look, DM Sans for modern retail -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,800;1,800&family=DM+Sans:wght@700;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ShelfRx Pro - Aura Master Planogram</title>
     <style>
         :root {
-            --teal: #4FC3F7; --tealD: #0277BD; 
-            --amber: #FFB74D; 
-            --aura-bg: #C2185B;
-            --bg: #0A0F5A; --card: rgba(255,255,255,.07); --border: rgba(255,255,255,.12);
-            --t1: #FFFFFF; /* Forced White */
-            --t3: #FFFFFF; /* Forced White for labels */
+            /* Aura Dark Theme with Neon Accents */
+            --bg: #0f172a;
+            --surface: rgba(30, 41, 59, 0.85);
+            --border: rgba(6, 182, 212, 0.4);
+            --text: #f8fafc;
+            --accent-cyan: #06b6d4;
+            --accent-pink: #ec4899;
+            --accent-green: #10b981;
+            
+            /* Realistic Planogram Wood Textures */
+            --rack-wood: linear-gradient(to bottom, #d4a373 0%, #faedcd 15%, #faedcd 85%, #d4a373 100%);
+            --rack-edge: #b5835a;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t1); overflow: hidden; height: 100dvh; }
-        #app { height: 100%; display: flex; flex-direction: column; }
-        .main { flex: 1; overflow-y: auto; padding-bottom: 100px; }
 
-        .hdr { padding: max(15px, env(safe-area-inset-top)) 20px 10px; background: var(--bg); }
-        /* Boots Script/Heritage Font Style */
-        .headline { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 800; font-style: italic; color: #FFFFFF; }
-        .headline span { color: var(--amber); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: var(--bg); color: var(--text); 
+            padding-bottom: 60px; min-height: 100vh;
+        }
         
-        .kpi-strip { 
-            display: flex; gap: 8px; padding: 10px 20px; overflow-x: auto; 
-            background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border);
-            scrollbar-width: none;
+        body::before {
+            content: ''; position: fixed; inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(6, 182, 212, 0.1) 0%, transparent 60%);
+            pointer-events: none; z-index: -1;
         }
-        .kpi-pill { background: var(--card); border: 1px solid var(--border); padding: 8px 12px; border-radius: 12px; flex-shrink: 0; }
-        /* White & Bold Labels */
-        .kpi-pill-l { font-size: 10px; font-weight: 900; color: #FFFFFF; text-transform: uppercase; margin-bottom: 2px; }
-        .kpi-pill-v { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--teal); }
-        .kwd-tag { font-size: 9px; color: var(--amber); margin-left: 4px; font-weight: 900; }
 
-        .grid-compact { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px 20px; }
-        .entry-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 18px; padding: 15px 12px; transition: 0.1s; position: relative; }
+        /* Glassmorphism Navigation */
+        nav { 
+            padding: 16px 24px; background: rgba(15, 23, 42, 0.8); 
+            backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .nav-logo { font-size: 1.25rem; font-weight: 900; letter-spacing: 1px; color: var(--text); display: flex; align-items: center; gap: 8px;}
+        .nav-logo span { color: var(--accent-cyan); }
         
-        /* Aura Grid Matching image.png */
-        .aura-grid { 
-            background: linear-gradient(180deg, #D81B60 0%, #AD1457 100%) !important; 
-            border: none !important;
-            box-shadow: 0 4px 15px rgba(216, 27, 96, 0.3);
+        .btn { 
+            background: var(--accent-cyan); color: #000; border: none; 
+            padding: 8px 16px; border-radius: 8px; cursor: pointer; 
+            font-weight: 800; font-size: 12px; transition: 0.2s ease; text-transform: uppercase;
+        }
+        .btn:active { transform: scale(0.95); }
+        .btn-pink { background: var(--accent-pink); color: #fff; }
+        .btn-outline { background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); }
+
+        /* Module Tabs */
+        .module-tabs { 
+            display: flex; gap: 12px; padding: 20px 24px; overflow-x: auto; 
+            scrollbar-width: none; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .module-tabs::-webkit-scrollbar { display: none; }
+        .tab { 
+            padding: 8px 20px; border-radius: 20px; background: rgba(255,255,255,0.05); 
+            cursor: pointer; white-space: nowrap; font-weight: 600; font-size: 13px;
+            border: 1px solid transparent; transition: 0.2s;
+        }
+        .tab.active { 
+            background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); 
+            border-color: var(--accent-cyan); font-weight: 800; 
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
         }
 
-        .entry-card:active { transform: scale(0.96); opacity: 0.8; }
-        .entry-icon { font-size: 20px; margin-bottom: 6px; }
-        /* White & Bold Entry Labels */
-        .entry-label { font-size: 11px; font-weight: 900; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.8px; }
-        .entry-val { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; margin-top: 2px; color: #FFFFFF; }
-        .entry-kwd { font-size: 11px; color: var(--amber); font-weight: 900; margin-top: 3px; display: block; }
+        /* Views */
+        .view-section { display: none; animation: fadeIn 0.3s ease; padding: 0 24px; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; align-items: flex-end; z-index: 1000; }
-        .modal.show { display: flex; }
-        .modal-content { background: #08104D; width: 100%; border-radius: 32px 32px 0 0; padding: 20px 24px max(30px, env(safe-area-inset-bottom)); border-top: 1px solid var(--border); }
-        .calc-display { background: rgba(0,0,0,0.4); border-radius: 18px; padding: 20px; margin-bottom: 20px; text-align: right; border: 1px solid var(--border); }
-        .calc-formula { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: #FFFFFF; opacity: 0.6; min-height: 1.2em; margin-bottom: 4px; }
-        .calc-main { font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 700; color: #FFFFFF; }
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .calc-btn { height: 60px; border-radius: 16px; background: var(--card); color: #FFFFFF; font-size: 22px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); }
-        .calc-btn.op { background: var(--tealD); }
-        .calc-btn.eq { background: var(--aura-bg); grid-column: span 2; }
+        /* Wood Rack / Shelf Architecture */
+        .rack { 
+            background: var(--rack-wood); border: 4px solid var(--rack-edge); 
+            border-radius: 12px; margin-bottom: 30px; padding: 16px; 
+            box-shadow: 0 12px 24px rgba(0,0,0,0.6); position: relative;
+        }
+        .rack-header { 
+            font-size: 13px; font-weight: 900; color: #432818; 
+            border-bottom: 3px solid #9c6644; padding-bottom: 6px; 
+            margin-bottom: 16px; display: flex; justify-content: space-between;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        /* Strict 6-Product Capacity per Rack line */
+        .shelf-grid { 
+            display: grid; grid-template-columns: repeat(6, 1fr); 
+            gap: 12px; align-items: end; 
+        }
 
-        .btn-save { background: linear-gradient(135deg, var(--teal), var(--tealD)); margin: 15px 20px; padding: 18px; border-radius: 18px; color: #FFFFFF; font-weight: 900; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+        /* Product Slot & Bottle */
+        .slot { 
+            display: flex; flex-direction: column; align-items: center; 
+            text-align: center; cursor: pointer; position: relative; height: 100%; justify-content: flex-end;
+            transition: transform 0.2s;
+        }
+        .slot:hover { transform: translateY(-4px); }
+        .bottle { 
+            width: 100%; max-width: 55px; height: 75px; 
+            background: #f1f5f9; border-radius: 8px 8px 4px 4px; 
+            border: 2px solid #94a3b8; display: flex; align-items: center; 
+            justify-content: center; box-shadow: 3px 3px 8px rgba(0,0,0,0.4); 
+            background-size: cover; background-position: center; position: relative; 
+            font-size: 24px; color: #cbd5e1;
+        }
+        .bottle::before { /* Cap simulation */
+            content: ''; position: absolute; top: -6px; left: 10%; width: 80%; height: 6px;
+            background: #64748b; border-radius: 4px 4px 0 0;
+        }
+        .bottle.empty { 
+            background: rgba(255,255,255,0.1); border: 2px dashed #94a3b8; 
+            box-shadow: none; color: #94a3b8; font-size: 20px; font-weight: 900;
+        }
+        .bottle.empty::before { display: none; }
+        
+        .facing-badge { 
+            position: absolute; top: -12px; right: -12px; 
+            background: var(--accent-pink); color: #fff; font-size: 10px; 
+            font-weight: 900; padding: 2px 6px; border-radius: 12px; 
+            z-index: 10; border: 2px solid var(--bg); box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+        }
+        
+        .prod-name { 
+            font-size: 10px; font-weight: 800; color: #1e293b; 
+            margin-top: 8px; line-height: 1.2; width: 100%; 
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .prod-meta { font-size: 11px; font-weight: 900; color: #065f46; font-family: monospace; margin-top: 3px; }
+        .prod-expiry { font-size: 9px; color: #991b1b; font-weight: 700; margin-top: 2px; }
+
+        /* Editing Modal & Image Picker */
+        .modal { 
+            display: none; position: fixed; inset: 0; 
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); 
+            z-index: 1000; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal.active { display: flex; }
+        .modal-content { 
+            background: #1e293b; border: 1px solid var(--border); 
+            border-radius: 16px; padding: 24px; width: 100%; max-width: 500px; 
+            max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;}
+        .modal-header h3 { color: var(--accent-cyan); font-size: 1.25rem; font-weight: 900; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-group { display: flex; flex-direction: column; grid-column: span 1; }
+        .form-group.full { grid-column: span 2; }
+        .form-group label { font-size: 10px; color: var(--accent-cyan); text-transform: uppercase; font-weight: 800; margin-bottom: 6px; letter-spacing: 0.5px;}
+        .form-group input { 
+            padding: 10px 12px; border-radius: 8px; border: 1px solid #475569; 
+            background: rgba(0,0,0,0.3); color: #fff; font-family: 'Segoe UI', sans-serif; font-size: 13px;
+        }
+        .form-group input:focus { outline: none; border-color: var(--accent-cyan); box-shadow: 0 0 8px rgba(6, 182, 212, 0.3); }
+        
+        .image-picker-zone {
+            border: 2px dashed var(--accent-cyan); border-radius: 8px; padding: 16px; 
+            text-align: center; cursor: pointer; position: relative; background: rgba(6, 182, 212, 0.05);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .image-picker-zone:hover { background: rgba(6, 182, 212, 0.1); }
+        .image-picker-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+        .preview-img { width: 60px; height: 60px; border-radius: 6px; object-fit: cover; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: 2px solid var(--accent-cyan); }
+
+        /* Settings Grid View */
+        .settings-wrap { 
+            background: var(--surface); border: 1px solid var(--border); 
+            border-radius: 12px; overflow-x: auto; margin-top: 20px;
+        }
+        table.settings-grid { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 900px; }
+        table.settings-grid th, table.settings-grid td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; }
+        table.settings-grid th { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); font-weight: 800; text-transform: uppercase; position: sticky; top: 0; }
+        table.settings-grid td input { 
+            width: 100%; background: transparent; border: 1px solid #475569; 
+            color: #fff; padding: 6px 8px; border-radius: 6px; 
+        }
+        table.settings-grid td input[type="file"] { border: none; padding: 0; font-size: 10px; }
+        table.settings-grid tr:hover { background: rgba(255,255,255,0.02); }
+        
+        .thumbnail { width: 30px; height: 30px; border-radius: 4px; object-fit: cover; border: 1px solid var(--accent-cyan); }
     </style>
 </head>
 <body>
 
-<div id="app">
-    <div class="hdr">
-        <div class="headline">Boots <span>Pharmacy</span></div>
+    <nav>
+        <div class="nav-logo">
+            <span style="font-size: 20px;">✧</span> Aura <span>ShelfRx Master</span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-outline" onclick="switchView('planner')">🪵 Planner Racks</button>
+            <button class="btn btn-pink" onclick="switchView('settings')">⚙️ Global Image Grid Settings</button>
+        </div>
+    </nav>
+
+    <!-- MODULE TABS -->
+    <div class="module-tabs" id="moduleTabs">
+        <!-- Generated dynamically -->
     </div>
 
-    <div class="kpi-strip">
-        <div class="kpi-pill"><div class="kpi-pill-l">ATV</div><div class="kpi-pill-v"><span id="k-atv">0.00</span><span class="kwd-tag" id="k-atv-kwd">0.0 KWD</span></div></div>
-        <div class="kpi-pill"><div class="kpi-pill-l">No7 Share</div><div class="kpi-pill-v" id="k-no7">0.0%</div></div>
-        <div class="kpi-pill"><div class="kpi-pill-l">IPC</div><div class="kpi-pill-v" id="k-ipc">0.00</div></div>
-        <div class="kpi-pill"><div class="kpi-pill-l">CVR</div><div class="kpi-pill-v" id="k-cvr">0.0%</div></div>
-    </div>
+    <!-- MAIN RACK PLANNER VIEW -->
+    <main id="view-planner" class="view-section active">
+        <div style="margin: 10px 0 20px; font-size: 12px; color: var(--accent-green); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">
+            Showing Module: <span id="currentModuleLabel">1</span> | Master SKU Database Active (383 Records)
+        </div>
+        <div id="racks-container">
+            <!-- Racks generated via JS -->
+        </div>
+    </main>
 
-    <div class="main">
-        <div class="grid-compact" id="input-grid"></div>
-        <div class="btn-save" onclick="saveData()">✓ FINISH & SAVE REPORT</div>
-    </div>
-</div>
+    <!-- SETTINGS & DATA GRID VIEW -->
+    <main id="view-settings" class="view-section">
+        <div style="margin: 10px 0; font-size: 18px; font-weight: 900; color: var(--accent-cyan);">
+            Global Settings & Image Picker Data Grid
+        </div>
+        <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Directly edit quantities, expiries, batches, and upload product images across the entire catalog.</p>
+        <div class="settings-wrap">
+            <table class="settings-grid">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">SL</th>
+                        <th style="width: 50px;">Img</th>
+                        <th style="width: 250px;">Description</th>
+                        <th style="width: 120px;">Barcode</th>
+                        <th style="width: 130px;">Expiry (Date)</th>
+                        <th style="width: 100px;">Batch</th>
+                        <th style="width: 70px;">Qty</th>
+                        <th style="width: 70px;">Facing</th>
+                        <th>Upload Image</th>
+                    </tr>
+                </thead>
+                <tbody id="settings-grid-body">
+                    <!-- Populated via JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
 
-<!-- Modal -->
-<div class="modal" id="calc-modal">
-    <div class="modal-content">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
-            <h3 id="modal-title" style="font-family:'Playfair Display'; color:#FFFFFF; font-style:italic">Entry</h3>
-            <button onclick="closeModal()" style="color:#FFFFFF; background:none; border:none; font-size:24px">✕</button>
-        </div>
-        <div class="calc-display">
-            <div class="calc-formula" id="calc-formula"></div>
-            <div class="calc-main" id="calc-main">0</div>
-        </div>
-        <div class="calc-grid">
-            <div class="calc-btn" onclick="press('7')">7</div><div class="calc-btn" onclick="press('8')">8</div><div class="calc-btn" onclick="press('9')">9</div><div class="calc-btn op" onclick="press('-')">-</div>
-            <div class="calc-btn" onclick="press('4')">4</div><div class="calc-btn" onclick="press('5')">5</div><div class="calc-btn" onclick="press('6')">6</div><div class="calc-btn op" onclick="press('+')">+</div>
-            <div class="calc-btn" onclick="press('1')">1</div><div class="calc-btn" onclick="press('2')">2</div><div class="calc-btn" onclick="press('3')">3</div><div class="calc-btn op" onclick="press('C')">C</div>
-            <div class="calc-btn" onclick="press('0')">0</div><div class="calc-btn" onclick="press('.')">.</div><div class="calc-btn eq" onclick="press('=')">SAVE (=)</div>
+    <!-- PRODUCT EDIT MODAL -->
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Product / Image Editor</h3>
+                <button style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;" onclick="closeModal()">✕</button>
+            </div>
+            
+            <div class="form-group full" style="margin-bottom: 15px;">
+                <label>Upload Custom Label / Box Image</label>
+                <div class="image-picker-zone">
+                    <input type="file" id="mod-img" accept="image/*">
+                    <span style="font-size: 24px; color: var(--accent-cyan);">📷</span>
+                    <span style="font-size: 11px; color: #94a3b8; font-weight: bold;">Tap to upload product image</span>
+                    <img id="mod-img-preview" class="preview-img" src="" alt="Preview">
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label>Product Description</label>
+                    <input type="text" id="mod-desc" placeholder="Enter product name">
+                </div>
+                <div class="form-group">
+                    <label>RMS Barcode</label>
+                    <input type="text" id="mod-rms" placeholder="e.g. 853244...">
+                </div>
+                <div class="form-group">
+                    <label>Alshaya Code</label>
+                    <input type="text" id="mod-alshaya" placeholder="System code">
+                </div>
+                <div class="form-group">
+                    <label>Expiry Date</label>
+                    <input type="date" id="mod-expiry">
+                </div>
+                <div class="form-group">
+                    <label>Batch Code</label>
+                    <input type="text" id="mod-batch" placeholder="e.g. B2600">
+                </div>
+                <div class="form-group">
+                    <label>Quantity In Stock</label>
+                    <input type="number" id="mod-qty" min="0" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>Facing Amount</label>
+                    <input type="number" id="mod-facing" min="1" placeholder="1">
+                </div>
+            </div>
+
+            <button class="btn" style="width: 100%; padding: 14px; margin-top: 20px; font-size: 14px;" onclick="saveEdit()">SAVE TO SYSTEM</button>
         </div>
     </div>
-</div>
 
 <script>
-    let currentKey = '';
-    let formula = '';
-    let data = { totalAED: 0, trn: 0, no7AED: 0, totalItems: 0, footfall: 0, auraTrn: 0 };
+    /* =========================================================
+       1. DATA LAYER (Complete 383 Item Master Database)
+       ========================================================= */
+    // Provided raw data embedded safely via template literal
+    const RAW_TSV_DATA = `1	853244003005	B2BOB244003005	NEOCELL SUPER COLLAGEN PLUS VITAMIN C PLUS BIOTIN 180 TABLETS	2	1	1.2	19
+2	853244003074	B2BOB244003074	NEOCELL SUPER COLLAGEN PLUS VITAMIN C PLUS BIOTIN 270 TABLETS	1	1	1.2	19
+3	35046087456	B2BOB246087456	NEOCELL COLLAGEN BEAUTY BUILDER 150S TABLETS	1	1	1.2	19
+4	16185129009	WOBOWOM12900	COLLAGEN BEAUTY CAPSULES 30 CASPULES	2	1	1.2	19
+5	347749193		(Not specified)	1	1	1.2	19
+6	8684556261201		VITABIOTICS PERFECTIL PLUS SKIN TABS 56S	1	1	1.2	19
+7	628069520231	335759558	YOUTHEORY COLLAGEN 120STAB	1	1	1.2	19
+8	Y1BOY10900873	5903260900873	YOUTHEORY COLLAGEN ADVANCED 160S TAB	2	1	1.2	19
+9	330963987	330924233	REJUVICARE SUPER COLLAGEN CAPS 90S	2	1	1.2	19
+10	220154834	Y1BOY10902730	NEOCELL FISH COLLAGEN + HA 120CAP	1	1	1.2	19
+11	B2BOB22370098	WOBOWO5223398	YOUR GUMMIES COLLAGEN PLUS BIOTIN VIT C & ZINC GUMMIES 60S	1	1	1.2	19
+12	16185132603	16185132627	OH MY OH COLLAGEN GUMMIES 350G	2	1	1.2	19
+13	16185129313	5903260902730	COLLAGEN BEAUTY EFFERVESCENT 20 TABLETS	1	1	1.2	19
+14	5023652370098	5021265223398		(Not specified)	1	1	1.2	19
+15	7629999061590	B2BOB29039117		(Not specified)	13	1	1.1	33
+16	16185019867	WOBOWOM01986	12" Wooden Shelf without Dividers	1	1	1.1	33
+17	16185132955	342714922		(Not specified)	7	1	1.1	33
+18	220212282	3859892980627		(Not specified)	2	1	1.1	33
+19	6285078000150	5903260902822		(Not specified)	2	1	1.1	33
+20	130252241	129826893		(Not specified)	2	1	1.1	33
+21	7350122360685	7301337278319		(Not specified)	1	1	1.1	33
+22	868573000182	B2BOB273000182		(Not specified)	1	1	1.1	33
+23	5019781022700	220233096		(Not specified)	1	1	1.1	33
+24	129962664	129816897		(Not specified)	2	1	1.1	33
+25	16185129900	7301337323422		(Not specified)	1	1	1.1	33
+26	8423245105248	333920279		(Not specified)	1	1	1.1	33
+27	333464221	3858893381112		(Not specified)	1	1	1.1	33
+28	B2BOB2259570001	220227618		(Not specified)	1	1	1.1	33
+29	339999551	5060259570179		(Not specified)	1	1	1.1	33
+30	5060259570179	7350122362771		(Not specified)	2	1	1.1	33
+31	6285074003575	WUBOWUPRIO001	PRIORIN NCAP 90S	1	1	1.3	19
+32	6285074005661	345355261	PRIORIN EXTRA BLISTER 60 CAPS	1	1	1.3	19
+33	9383993654254	B2BOB293654254	GLOW RADIANCE FOLIKLE 60 CAPS	1	1	1.3	19
+34	WOBO WO5 245 7 41	5021265245741	VITABIOTICS PERFECTIL PLUS HAIR TAB 60S	1	1	1.3	19
+35	5021265248780	WEBOWEVITS3848	VITABIOTICS HAIRFOLLIC WOMEN 60TAB	2	1	1.3	19
+36	8429420222830	332204326	ISDIN LAMBDAPIL 5 ALPHA PLUS CAPS 60S	1	1	1.3	19
+37	331894318	5903163602850	PAXAS WHITE GLOW TABS 20 EFFERVESCENT TABLETS	1	1	1.3	19
+38	16185096653	WOBOWOM09665	NEOCELL BLUEBERRYHA LIQUID 16OZ	1	1	1.3	19
+39	3282779065863	5425003041587	DUCRAY ANACAPS HAIR SUPP 60 CAP	1	1	1.3	19
+40	8057289181649	3660398501021	ALLINE PROCAP 75 CAPSULES	1	1	1.3	19
+41	4046222750909	XSBOXS2750909	FASTCAP 500 HAIRLOSS 30TABS	1	1	1.3	19
+42	B2BOB29181649	Y5BOY58500925	BIORGA CYSTIPHANE TABLETS 120S	1	1	1.3	19
+43	5019781015061	220166011	PANTOGAR 90 CAPS	1	1	1.3	19
+44	609788968665	Y1BOY1	PEARLY SKIN WHIT CAPS 60CT	1	1	1.3	19
+45	129816899	B2BOB25012364		(Not specified)	1	1	1.4	13
+46	B2BOB25010599	B2BOB24050452		(Not specified)	1	1	1.4	13
+47	335774940		SWEDISH NATURA HYALURONIC ACID 500ML	1	1	1.4	13
+48	8021685012364	8021685010599	MIGLIORIN TRICOX CAPS FOR HAIR 20S	1	1	1.4	13
+49	15794050452	628069520224	MIGLIORIN 90 GEL CAPSULES	1	1	1.4	13
+50	5019781000234	WMBOWM1000234	COUNTRY LIFE MAXI HAIR PLUS 120 CAPS	1	1	1.4	13
+51	5021265220038	WOBOWOMV201	OH MY OH HAIR SKIN AND NAILS GUMMIES 350G	1	1	1.4	13
+52	740985214343	74312075803	HEALTH AID HAIR VIT CAPS 30S	1	1	1.4	13
+53	35046074227	WOBOWOMTC21434	21ST CENTURY HAIR SKIN 50 CAP	1	1	1.4	13
+54	ZIBOZINB803	B2BOB246074227	NB SKIN HAIR & NAILS	1	1	1.4	13
+55	340514683	7350122362832	PRO COLLAGENIUM 14X25ML	1	1	1.5	7
+56	5019781016006	342249688	SKINAGE COLLAGEN PRISTIGE 15 AMPOULES 10000MG	1	1	1.5	7
+57	733739037961	WOBOWO3796	NEOCELL SUPER COLLAGEN 7OZ	1	1	1.5	7
+58	WOBOWO4159040	220154423	NEOCELL SUPER COLLAGEN POWDER PEPTIDES 198G BERRY LEMON	1	1	1.5	7
+59	33674159040	33674159033	SWEDISH NATURA COLLAGEN 10000 FISH	2	1	1.5	7
+60	8596024019491	129816903	PURE PEPTIDE POWDER 300GM	1	1	1.5	7
+61	6291109121077		SAKAI COLLAGEN COMPLETE 332G	1	1	1.5	7
+62	6291109121060	5021265247318	SKINAGE COLLAGEN TRI ACTIVE 20000MG 500ML	1	1	1.5	7
+63	5021265222001	5021265223602	LA BELLE COLLAGEN 10GDRINK 15BOTTLES	2	1	1.5	7
+64	344345310	344290413	COLLAGEN BEAUTY SHOTS 12 SHOTS	1	1	1.5	7
+65	WOBOWO5247318		SWEDISH MARINE BEAUTY COLLAGEN SHOTS 20S X 25ML	1	1	1.6	15
+66	733739004796	WOBOWO9004796	SWEDISH NATURA COLLAGEN 10000 FISH	1	1	1.6	15
+67	B2BOB24065081	WOBOWOM09664	PURE PEPTIDE LIQUID 500ML	1	1	1.6	15
+68	B2BOB21085442	810011085442	PHARMAXXI BEAUTY COLLAGEN 14STKS	1	1	1.6	15
+69	15794065081	16185096646	HEALTH AID NURIDEEN PLUS TAB 60S	1	1	1.6	15
+70	16185096646	5021265223350	NEOCELL COLLAGEN POMEGRANATE LIQ 473ML	1	1	1.6	15
+71	WOBOWOVITA3350	130393711	PURE GOLD COLLAGEN-500ML-10X50ML 1 BX	1	1	1.6	15
+72	B2BOB247010068	850007144159	PURE GOLD COLLAGEN FORTE500ML10X50ML 1BX	2	1	1.6	15
+73	793888019355	9383933398286	SWEDISH NUTRA COLLAGEN GOLD	1	1	1.6	15
+74	220055768	733739026804	RETINOL AMPOULES 12500 MG 25 ML 15S	1	1	1.6	15
+75	344405790		CENTRUM WOMEN TAB 100S	1	2	2.1	33
+76	WOBOWO21225	740985212257	CENTRUM WOMEN TAB 30S	1	2	2.1	33
+77	B2BOB24068723	15794068723	VITABIOTICS WELLTEEN HER 30 TAB	1	2	2.1	33
+78	850072993003	733739026804	VITABIOTICS WELLWOMAN CAPS 30	1	2	2.1	33
+79	740985212257	WOBOWO39026804	VITABIOTICS WELLWOMAN 50+ 30 TAB	1	2	2.1	33
+80	965014200001	Y5BOY5PSFV05	ADDITIVA VITC EFF1GM LEMON 20	1	2	2.1	33
+81	220218793	B2BOB2VALU422	ADDITIVA VITC EFF1GM RED/OR 20	1	2	2.1	33
+82	Y5BOY5241494	220233333	HEALTH AID VIT C 1000MG EFF BLKCRNT 20S	1	2	2.1	33
+83	B2BOB21256879	ZZBOZZ1140941	VALUPAK EFFERVESCENT VITAMIN C 1000MG	1	2	2.1	33
+84	B2BOB27020340	B2BOB21082915	FAST & UP EFFERVESCENT TAB 20S	1	2	2.1	33
+85	B2BOB295006304	ZWBOZW525800	HEALTH AID VITAMIN C ORANGE 1GM TABS 20S	1	2	2.1	33
+86	5019781011605	5024874015422	NC VIT C FORTE 1000 MG ORANGE 20 EFF TAB	2	2	2.1	33
+87	7640140241494	5019781011506	MAXIMUNE VITAMIN C 1000 MG + ZINC 50 MG	1	2	2.1	33
+88	5907581256893	8595011140941	ACTIVISE VITAMIN C1000 20 EFF TAB	1	2	2.1	33
+89	819957020340	810011082915	SUNSHINE N VITAMIN C 1000MG EFF LEMON TABS 20S	1	2	2.1	33
+90	859795006304	645638525800	SUNSHINE N VITAMIN C 1000MG ORANGE FLAV EFFERV 20TABS	1	2	2.1	33
+91	6285074004688	220100221	NF VITALSHIELD IMMUNE SUPPORT EFF TAB 20S	1	2	2.2	26
+92	9650155002070	WUBOWUCALC987	REDOXON ORANGE 1G EFF TABS 15S	1	2	2.2	26
+93	6285074005210	345823458	CAL-C-VITA EFFERVESCENT TABLETS 15'S	1	2	2.2	26
+94	5024874015507	B2BOB24015507	REDOXON TRIPLE FORMULA EFF TABS 15S	1	2	2.2	26
+95	6285074005609	345876217	VALUPAK IMMUNE SUPPORT EFFER 20TAB	1	2	2.2	26
+96	965015500031	WUBOWUASP-032-0	REDOXON COMPLETE EFF TABS 15S	1	2	2.2	26
+97	347809061	8684556261089	BEROCCA EFFERVESCENT TABS 10	1	2	2.2	26
+98	33984032750	220192279	SOLGAR CHELATED ZINC TAB 100S	1	2	2.2	26
+99	15794016090	B2BOB24016090	SOLGAR ZINC PICOLINATE 22MG TAB 100S	1	2	2.2	26
+100	B2BOB21083929	B2BOB2121948	HEALTH AID SELENIUM + A C E ZINC TABS 60S	1	2	2.2	26
+101	810011083929	859795006069	SOLARAY ZINC 50MG 100 CAPS	1	2	2.2	26
+102	33984037205	220190454	NOW ZINC PICOLINATE 50 MG 60 CAPS	1	2	2.2	26
+103	33984008007	220123582	SOLGAR VIT B COMPLEX 100 CAP 50S	1	2	2.2	26
+104	33984037250	220085748	SOLGAR VIT B COMPLEX W VIT C TAB 100S	1	2	2.2	26
+105	WMBOWM1020027	5019781020027	YOUR GUMMIES ELDERBERRY & VIT C&ZINC GUMMIES 60S	1	2	2.2	26
+106	76280610413	B2BOB20610413	SOLGAR VITAMIN C 1000 MG TAB 90S	1	2	2.2	26
+107	733739148490	WOBOWO1550	COUNTRY LIFE ALLER-MAX 50 CAPS	1	2	2.3	19
+108	733739148490	WOBOWO1550	SUNSHINE N SUPER IMMUNITY WITH NAC 100 CAPS	1	2	2.3	19
+109	33984011496	33984002005	SUNSHINE N VITC 1000 MG WITH ROSEHIPS TAB 100S	1	2	2.3	19
+110	220191933	347813886	SOLGAR ZINC 50TAB100S	1	2	2.3	19
+111	345565419	5019781010103	SOLGAR VIT B COMPLEX 100 CAP 50S	1	2	2.3	19
+112	WOBOWOMTC21024	740985210246	SOLGAR VIT B COMPLEX W VIT C TAB 100S	1	2	2.3	19
+113	628069520170	335739892	HEALTH AID VITAMIN B50 COMPLEX TABS 30S	1	2	2.3	19
+114	220107578	220154687	21ST C-500 MG ORANGE FLAVOUR CHEWABLES 110S	1	2	2.3	19
+115	336457256	5019781010714	OH MY OH VITAMIN C GUMMIES 350G	1	2	2.3	19
+116	5019781017157	6291109120667	HEALTH AID SUPER BREWERS YEAST TABLETS 240S	1	2	2.3	19
+117	733739006806	WOBOWO680	HAID GINKOVITAL 500MG 30S	1	2	2.3	19
+118	Z7I4B3O1Z2I0N3W8882088	345560413	CENTRUM IMMUNE SUPPORT ELDERBERRY CAPSULES 60S	1	2	2.3	19
+119	74312132018	8410885089793	NOW VITAMIN C 1000 100 TABS	1	2	2.3	19
+120	WCBOWC5089793	74312020605	NB VITAMIN C 500MG 90 CHEWABLE	1	2	2.3	19
+121	ZIBOZI2020605	74312017803	NB ZINCELATED 50MG 100CAP	1	2	2.4	13
+122	ZIBOZI1780	74312117800	NB E -1000 IU 60 SOFTGELS	1	2	2.4	13
+123	WMBOWM551	740985212455	PURITANS PRIDE E 1000IU CAP 50	1	2	2.4	13
+124	220231241	733739009067	21ST E-400 IU 110SOFTGEL	1	2	2.4	13
+125	WOBOWO906	74312017704	NOW E-400 MIXED TOCO.&SELE.CAP.100S NB	1	2	2.4	13
+126	ZIBOZI2017704	733739110619	VIT E - 400 IU S/G CAPS 100S	1	2	2.4	13
+127	733739110619		NOW VIT E LIQ 13650 IU DA 1 OZ	1	2	2.4	13
+128	5021265250592	WOBOWO65221585	VITABIOTICS PREGCARECNCEPTNTB30S	2	2	2.5	7
+129	5021265247622	WOBOWOMV191	PREGNACARE TAB 30S	2	2	2.5	7
+130	5021265221523		VITABIOTICS PREGNACARE PLUS 56S	1	2	2.5	7
+131	5021265244843	WOBOWO5244843	VITABIOTICS PREGNACARE MAX TAB 84S	1	2	2.5	7
+132	WOBOWO5232062		VITABIOTICS PREGNACARE	1	2	2.5	7
+133	WOBOWO5636		BREASTFEEDING 84S	1	2	2.5	7
+134	WOBOWO5636		NOW FENUGREEK 500 MG 100 CAPS	2	2	2.5	7
+135	76280902280	B2BOB20902280	SOLARAY FOLIC ACID80MCG 100CAPS	2	2	2.6	0
+136	74312014031	ZIBOZI2014031	NB FOLIC ACID 400 MCG 250 TAB	2	2	2.6	0
+137	074312114038	BZBTSLOPUR14038	PURITANS PRIDE FOLIC ACID 400MCG 250S	2	2	2.6	0
+138	5024874015347	XPBOXPVALU490	VALUPAK FOLIC ACID 400MCG 90 TAB	1	2	2.6	0
+139	74312073731	ZIBOZI2073731	NB EVENING PRIM. OIL 1000MG.	1	2	2.6	0
+140	733739017550	WOBOWO1755	NOW SUPER PRIMROSE 1300MG 120S/G	1	2	2.6	0
+141	5021265246242	WOBOWOVITA1202	VITABIOTICS MENOPACE PLUS DUAL PK5 6S	1	2	2.6	0
+142	5021265221004	WOBOWOMENO00	VITABIOTICS MENOPACE TABLET 30S	1	2	2.6	0
+143	5019781015856	WMBOWM1015856	HEALTH AID VEIN TABS 60S	1	2	2.6	0
+144	5019781010172		CENTRUM SILVER 100S	1	3	3.1	33
+145	333584468	Y3BOY3CENSIL1000	CENTRUM SILVER 30S	1	3	3.1	33
+146	6251613000527	Y3BOY3CENSIL30S	CENTRUM ENERGY TAB 100S	1	3	3.1	33
+147	6291109121039	6291109121053	CENTRUM MEN TAB 100S	1	3	3.1	33
+148	6291109121046	5019781014422	CENTRUM MEN TAB 30S	1	3	3.1	33
+149	344555284	344345305	HEALTH AID DAY VIT ACTIVE TABS 30S	1	3	3.1	33
+150	344335400	220221584	HEALTH AID B VITAL EFFERVESCENT TAB 20S	1	3	3.1	33
+151	6251613000503	BZBTSLOCEN00503	CENTRUM LUTEIN 100S	1	3	3.1	33
+152	6251613000497	Y3BOY3CEN3000	CENTRUM LUTEIN 30S	1	3	3.1	33
+153	5415062331736	Y3BOY32331736	CENTRUM ENERGY TAB 30S	1	3	3.1	33
+154	334724699	5000309008962	CENTRUM ENERGY RELEASE MULTIGUMMIES 60S	1	3	3.1	33
+155	8357760010492	220226679	TRQ ADULT MULTI VIT GUMMY 60S	1	3	3.1	33
+156	3345702340790	6027334719831	CENTRUM ADULTS MULTIGUMMIES 60'S	1	3	3.1	33
+157	5000309008900	5021265247325	CENTRUM IMMUNITY SUPPORT MULTIGUMMIES 60'S	1	3	3.1	33
+158	WOBOWO65247325	5021265247325	NEW CHAPTER EVERYMAN MULTI 72S	1	3	3.2	26
+159	5021265221301		VITABIOTICS WELLTEEN MEN TAB 30S	1	3	3.2	26
+160	5021265223527	WOBOWO5223527	VITABIOTICS WELLMAN CNCEPTN TB 30S	1	3	3.2	26
+161	5021265223534	WOBOWO65223534	VITABIOTICS WELLMAN TAB 30	1	3	3.2	26
+162	WEBOWEMMS0002		VITABIOTICS WELLMAN SPORT TAB 30S	1	3	3.2	26
+163	5021265223510	WEBOWEVITA3510	VITABIOTICS WELLMAN 50+ 30 TAB	1	3	3.2	26
+164	5024874015354	XPBOXPVALU495	VALUPAK MULTI +MINERALS 30 TAB	1	3	3.2	26
+165	965014200003	Y5BOY5PSFV02	ADDITIVA MULTI VITAMIN 20S	1	3	3.2	26
+166	00850007144223	333909190	PHARMAXXI NMN 60S	1	3	3.2	26
+167	33674159026		ALIVE MENS 50 GUMMY VITAMIN 60S	1	3	3.2	26
+168	220156253	345451146		(Not specified)	1	3	3.2	26
+169	WCBO WC5 0 810 25	5019781000258		(Not specified)	1	3	3.2	26
+170	74312135316	8410885081025	MARNYS PROPOLVIT DEFENS FOORSUP 200ML	1	3	3.3	19
+171	832621002350	ZWBOZW21002350	MARNYS GINJAL 2000 FOOD SUP 200ML	1	3	3.3	19
+172	B2BOB20154229	8040520154229	MARNYS EXOTIQUE FOOD SUP 220ML	1	3	3.3	19
+173	609788968702	Y1BOY1PENAMAX	MARNYS ROYAL PROVITE 5000 FOOD SUP 220ML	1	3	3.3	19
+174	8410885080691	WCBOWC5080691	WHITE HEALTH COQ 10 30S TAB	1	3	3.3	19
+175	8410885075611	WCBOWC5075611	NOW COQ10 100MG 50 SGEL	1	3	3.3	19
+176	8410885082558	WCBOWC5082558	SUNSHINE N MULTIVITAMIN EFF TAB 20S	1	3	3.3	19
+177	8410885081735	WCBOWC5081735	MARNYS ROYAL JELLY CAP 90S	1	3	3.3	19
+178	5903163605912	337233148	HEALTH AID KOREGIN 3000 BLISTER CAPS 30S	1	3	3.3	19
+179	733739032089	220291379	PURITANS PRIDE SAW PALMETTO 450MG 100S	1	3	3.3	19
+180	859795006564	B2BOB25006564	MARNYS GINSENG 1000MG W/LECITHN 30CAP	1	3	3.3	19
+181	8410885074669	WCBOWCMAR74669	VIGORMAX PLUS CAPS 60S	1	3	3.3	19
+182	874312020605	ZIBOZI2020605	NB ZINCELATED 50MG 100CAP	1	3	3.4	13
+183	74312017803	ZIBOZI1780	NB E -1000 IU 60 SOFTGELS	1	3	3.4	13
+184	074312117800	WMBOWM551	PURITANS PRIDE E 1000IU CAP 50	1	3	3.4	13
+185	740985212455	220231241	21ST E-400 IU 110SOFTGEL	1	3	3.4	13
+186	733739009067	WOBOWO906	NOW E-400 MIXED TOCO.&SELE.CAP.100S NB	1	3	3.4	13
+187	74312017704	ZIBOZI2017704	VIT E - 400 IU S/G CAPS 100S	1	3	3.4	13
+188	733739110619		NOW VIT E LIQ 13650 IU DA 1 OZ	1	3	3.4	13
+189	5021265250592	WOBOWO65221585	VITABIOTICS PREGCARECNCEPTNTB30S	2	3	3.5	7
+190	5021265247622	WOBOWOMV191	PREGNACARE TAB 30S	2	3	3.5	7
+191	5021265221523		VITABIOTICS PREGNACARE PLUS 56S	1	3	3.5	7
+192	5021265244843	WOBOWO5244843	VITABIOTICS PREGNACARE MAX TAB 84S	1	3	3.5	7
+193	WOBOWO5232062		VITABIOTICS PREGNACARE	1	3	3.5	7
+194	WOBOWO5636		BREASTFEEDING 84S	1	3	3.5	7
+195	WOBOWO5636		NOW FENUGREEK 500 MG 100 CAPS	2	3	3.5	7
+196	76280902280	B2BOB20902280	SOLARAY FOLIC ACID80MCG 100CAPS	2	3	3.6	0
+197	74312014031	ZIBOZI2014031	NB FOLIC ACID 400 MCG 250 TAB	2	3	3.6	0
+198	074312114038	BZBTSLOPUR14038	PURITANS PRIDE FOLIC ACID 400MCG 250S	2	3	3.6	0
+199	5024874015347	XPBOXPVALU490	VALUPAK FOLIC ACID 400MCG 90 TAB	1	3	3.6	0
+200	74312073731	ZIBOZI2073731	NB EVENING PRIM. OIL 1000MG.	1	3	3.6	0
+201	733739017550	WOBOWO1755	NOW SUPER PRIMROSE 1300MG 120S/G	1	3	3.6	0
+202	5021265246242	WOBOWOVITA1202	VITABIOTICS MENOPACE PLUS DUAL PK5 6S	1	3	3.6	0
+203	5021265221004	WOBOWOMENO00	VITABIOTICS MENOPACE TABLET 30S	1	3	3.6	0
+204	5019781015856	WMBOWM1015856	HEALTH AID VEIN TABS 60S	1	3	3.6	0
+205	15794081906	B2BOB24081906	GLOW RADIANCE VIRILE ENHA PERFORM TAB60S	1	4	4.1	33
+206	33674159002	220164524	AMS PENAMAX MALE ENHANCE 60CT	1	4	4.1	33
+207	5019781057115	330698983	COUNTRY LIFE CORE DAILY MEN 60 TABS	1	4	4.1	33
+208	819247010518	B2BOB247010518	NWAY ALIVE MENS GUMMY VITAMINS 60S	1	4	4.1	33
+209	3664798033229	129836892	HEALTH AID POWER VIT GOLD TABS 30S	1	4	4.1	33
+210	3664798033212	129841895	BLOOM & QUAINT MACHOMAX FORTE 60 CAP	1	4	4.1	33
+211	WOBOWOMTC22382	740985223802	PHARMATON VITALITY 100S	1	4	4.1	33
+212	740985223802		PHARMATON VITALITY 30S	1	4	4.1	33
+213	645638525572	ZWBOZW8525572	21ST CENTURY SENTARY TAB	1	4	4.1	33
+214	819247010037	B2BOB247010037	NF MEGATON GOLD MULTIVIT 100S	1	4	4.1	33
+215	5019781000227	220219947	BLOOM & QUAINT LIFE ENERGY 100 TAB	1	4	4.1	33
+216	832621000134	ZWBOZWVNF00013	HEALTH AID HAEMOVIT PLUS CAPS 30S	1	4	4.2	19
+217	33984009486	220192335	NFLIBIZIRE LIBIDO ENHANCER 60S	1	4	4.2	19
+218	330693995	130377822	SOLGAR COQ-10 VEGICAPS 200 MG 30S	2	4	4.2	19
+219	025077000586	25077000593	PURITANS PRIDE Q SORB COQ 10 200 MG 30 SOFTGELS	1	4	4.2	19
+220	733739016867	WOBOWO1686	PURITANS PRIDE COQ 10 100 MG 30 SOFTGEL	2	5	5.1	33
+221	347754409	8684556261171	COUNTRY LIFE OMEGA 3 MOOD 90 SOFTGELS	3	5	5.1	33
+222	5019781028931	220154084	NORD NAT OMEGA-3 FISH GELATIN 60SG CAPS	2	5	5.1	33
+223	220226535	5021265221608	NEW CHAPTER WHOLEMEGA 1000MG 60 SOFT GEL	2	5	5.1	33
+224	B2BOB24041207	B2BOB24041207	SOLGAR OMEGA 3 FISH OIL CON SG 120S	2	5	5.1	33
+225	WOBOWO0417603	B2BOB23900289	SOLGAR OMEGA-3 950 MG 100SGEL	2	5	5.1	33
+226	768990417603	727783900289	NOW ULTRA OMEGA 3 FISH OIL SOFTGEL 90S	2	5	5.1	33
+227	33984017887	B2BOB24017887	NOW OMEGA 3 1000MG 100S	2	5	5.1	33
+228	33984020580	220064872	21ST CENTURY ALASKA WILD FISH OIL 90SG	2	5	5.1	33
+229	857188004012	B2BOB28004012	AMS OMEGA 3 1000MG 60CT SOFTGELS	2	5	5.1	33
+230	768990017902	WOBOWO0017902	ADDITIVA MULTIVITAMIN+CAFFEINE 20 EFFERVES	2	5	5.1	33
+231	WOBOWO0018015	768990018015	NF HIGH QUALITY OMEGA-3 1000MG	2	5	5.1	33
+232	768990017612	WOBOWO0017612	WILEY'S PEAK EPA SOFTGEL 30'S	2	5	5.1	33
+233	733739016614	733739107596	NORD NAT ULTIMATE OMEGA 60 SG CAPS	1	5	5.2	26
+234	740985271292	609788968184	NORD NAT COMPLETE OMEGA XTRA 60 SG CAPS	1	5	5.2	26
+235	WOBOWONOW596	220172425	NORD NAT OMEGA-3D 60 SG CAPS	1	5	5.2	26
+236	220231423	Y5BOY5ADDCAF01	NOW TRI 3D OMEGA S/GELS 90S	1	5	5.2	26
+237	4026466141961	645638525404	YOUR GUMMIES FISH OIL OMEGA 3 GUMMIES 60S	1	5	5.2	26
+238	ZWBOZW8525404		HEALTH AID OMEGAZONE PLUS CAPS 30S	1	5	5.2	26
+239	WOBOWO22874	740985228746	CARDIOACE CAPSULES 30S	1	5	5.3	19
+240	15794041009	B2BOB24041009	COUNTRY LIFE OMEGA 369 90 SOFTGELS	1	5	5.3	19
+241	868573000199	B2BOB23000199	PHARMAXXI MAXXI OMEGA 3,6,7,9 60CAPS	1	5	5.3	19
+242	B2BOB2121782	859795006106	SUNSHINE N ORG FLAXSEED OIL OMEGA 3-6-9 SG 100S	1	5	5.3	19
+243	733739016256	WOBOWO1625	NOW KRILL OIL 500 MG S/GELS 60S	2	5	5.3	19
+244	859795006137	B2BOB2121783	SUNSHINE N COD LIVER OIL SG 100S	1	5	5.3	19
+245	5019781010745	341129631	HEALTH AID LIVERCARE TAB 60S	1	5	5.3	19
+246	850007144272	339491220	PHARMAXXI BERBERINE 600 MG TABS 30	1	5	5.3	19
+247	339516166	850007144289	PHARMAXXI D3K2 D3 4000 IU K2 MK7 100 MCG CAPS 30S	1	5	5.3	19
+248	733739018076	859795006113	SOLGAR GENTLE IRON 25MG VEGICAPS 90S	1	5	5.4	13
+249	733739017437	628069520248	VALUPAK MULTI +IRON 60 TAB	1	5	5.4	13
+250	733739018397	WOBOWO39018076	GOL VITAMIN CODE RAW IRON CAP 30S	1	5	5.4	13
+251	B2BOB25006113		PURITANS PRIDE EASY IRON 28 MG 30	2	5	5.4	13
+252	WOBOWO39017437	335754669	SOLGAR VD-3 10000 IU SOFTGELS 120S	1	5	5.4	13
+253	WOBOWO1839	220217862	NOW VITAMIN D 1000 IU S/GELS 180S	1	5	5.4	13
+254	33984012493	5024874015040	VITABIOTICS FEROGLOBIN 30CAPS	1	5	5.4	13
+255	XPBOXPVALU494	658010113762	NB MILK THISTLE 1000 MG 50S	1	5	5.4	13
+256	347818915	130362971	VITABIOTICS FEROGLOBIN SYRUP	1	5	5.4	13
+257	B2BOB284358720	WOBOWO365	VITABIOTICS FEROGLOBIN FIZZ 20S	1	5	5.4	13
+258	74312116551	33984358720	21ST CENTURY TRIPLE OMEGA COMPLEX S.G. 90S	1	5	5.4	13
+259	733739003652	5021265220076	NOW ODORLESS GARLIC 100SGEL	1	5	5.5	7
+260	WOBOWOMV011		(V) SUNSHINE N OMEGA 3 950MG 100SG	2	5	5.5	7
+261	74312019470	5021265231218	NOW COD LIVER OIL EXT STRN 90 SGEL	1	5	5.5	7
+262	5021265247295	WOBOWO5247295	OH MY OH OMEGA AND DHA GUMMIES 350G	1	5	5.5	7
+263	ZIBOZI2019470	WOBOWOMV021	NOW SUPER OMEGA 369 1200MG 90S	1	5	5.5	7
+264	9650364002465	B2BOB2A3025ML	CH ALPHA 30X25ML	1	6	6.1	33
+265	4260133180949	273794953	CH Alpha PLUS 30X25ML	1	6	6.1	33
+266	4260133180390	B2BOB23180390	CH ALPHA SPORT 25ML 30S	1	6	6.1	33
+267	339869972		SWEDISH NUTRA COLLAGEN JOINT AMPOULES 1000MG 25 ML 20S	1	6	6.1	33
+268	7350122360661	8410885083135	MARNYS ARTROHELP FORTE FOR JNTS FOOD SUP 200ML	1	6	6.1	33
+269	WOBOWOMTC22622	740985226230	21ST CENTURY ARTHRI-FLEX TABS 120S	1	6	6.1	33
+270	819247010020	B2BOB247010020	BLOOM & QUAINT FLEXIMOVE 100 TAB	1	6	6.1	33
+271	5021265222544	WEBOWEJOIN254	VITABIOTICS JOINTACE MAX 84S TABS	1	6	6.2	26
+272	WOBOWOMV217	5021265227471	VITABIOTICS OSTEOCARE WITH GLUCOSAMINE & CONDRONTIN 60S	1	6	6.2	26
+273	5021265222421	5019781017256	VITABIOTCS JOINTACE CHON 30S	1	6	6.2	26
+274	33984036031	33984019416	HEALTH AID OSTEOZIN TAB 90S	1	6	6.2	26
+275	835776001308	220239985	SOLGAR VIT K2 100MCG CAP 50S	1	6	6.2	26
+276	WEBOWEMMS0005	346164252	SOLGAR FOLATE 666 MCG DFE METAFOLIN 400 TAB 100S	1	6	6.2	26
+277	347769059	347823870	TRQ VITAMIN D3 BONE 60 GUMMIES	1	6	6.2	26
+278	5903163602034	129841893	ACTIVLAB COLLAGEN JOINT & BODY	1	6	6.2	26
+279	30768330491	220165026	SD OSTEO BI FLEX JOINT HEALTH TAB 30S	1	6	6.2	26
+280	5024874032061	B2BOB24032061	VALUPAK VITAMIN-D3 1000IU TAB 60S	1	6	6.2	26
+281	ZIBOZI69986606832		FLEXAMIN TABS 120+40S	1	6	6.3	19
+282	ZIBOZI69986606830		FLEXAMIN TABS 60+20S	1	6	6.3	19
+283	699866068448	699866068417	FLEXAMIN TRPL. STG.TABS	1	6	6.3	19
+284	699866148461	733739001047	NOW GLUTATHIONE 500 MG 60S	1	6	6.3	19
+285	740985270622	WOBOWO27062	21ST CENTURY D-1000 I.U TAB 110S	1	6	6.3	19
+286	ZIBOZINB14846	WOBOWO9001047	21ST GLUCOSAMINE & CHONDROITIN 8 PLUS 60S	1	6	6.3	19
+287	WOBOWOMTC22488	740985224885	VITABIOTICS OSTEOCARE CHEWABLE	1	6	6.4	13
+288	5021265220403	WOBOWOVITA0430	OSTEOCARE TAB 30S	1	6	6.4	13
+289	WOBOWOMV071	220160905	HEALTH AID MAGCITRA TABS 60S	1	6	6.4	13
+290	WMBOWM4230	XPBOXPVALU488	PURITANS PRIDE CALC600+VITD 60	1	6	6.4	13
+291	220158483	220192674	VALUPAK CA +VIT D 30 TAB	1	6	6.4	13
+292	347808865	220170749	NWAY ALIVE CALCIUM GUMMIES 60S PLUS VITAMIN D3	1	6	6.4	13
+293		SOLGAR CALC MAG W VIT D3 TAB 150S	1	6	6.4	13
+294		VITABIOTICS OSTEOCARE FIZZ 20S	1	6	6.4	13
+295	WOBOWOOSTEO29	WOBOWONCM0001	VITABIOTICS OSTEOCARE SYRUP 200ML	1	6	6.4	13
+296	5021265245871	5019781026036	NOW GLUCO500/CHOND400MSM 90 CAP	1	6	6.5	15
+297	74312142307	5024874015101	PHARMAXXI MAXXI FLEX 60 CAPSULES	1	6	6.5	15
+298	33674102343	33984033405	21ST CENTURY CALCIUM PLUS CAP	1	6	6.5	15
+299	33984005181	5019781000876	SOLGAR CALCI MAGNESIUM+ZINC TAB 100S	1	6	6.5	15
+300	5021265227297	WOBOWO3170	SOLARAY CALCIUM MAG & ZINC 100 CAPS	1	6	6.5	15
+301	130393707	733739031709	(V) SUNSHINE N CAL MAG ZINC WITH VIT D3 TAB 100S	1	6	6.5	15
+302	850007144142	740985223260	21ST CALMAGZINC+D TABS 90S	1	6	6.5	15
+303	33984005204	76280413540	HEALTH AID NEUROFORTE TABS 30S	1	6	6.5	15
+304	220221835	B2BOB20413540	SUNSHINE SUPER VIT-D3 2000IU 60TABS	1	6	6.5	15
+305	B2BOB2121785		NB CAL, MAG, ZINC CHEL.TABS.	1	6	6.5	15
+306	WOBOWOMTC22322	740985222638	PURITANS PRIDE CALCIUM MAGNESIUM ZINC 100S	1	6	6.5	15
+307	WOBOWOMTC22263		SUNSHINE N CAL WITH VIT D3 TAB 100S	1	6	6.5	15
+308	WMBOWM1014583	B2BOB246067007	NOW VITAMIN D3/K2 1000IU/45MCG 120CAPS	1	6	6.6	1
+309	ZIBOZI2042904	345560411	HEALTH AID VITAMIN D3 1000IU CAPS 30S	1	6	6.6	1
+310	5019781014583	35046067007	YOUR GUMMIES VITAMIN D3 K2 GUMMIES 60S	1	6	6.6	1
+311	74312042904	74312142901	WHITE HEALTH MAGNESIUM GLYCINATE 400MG 60CAPS	1	6	6.6	1
+312	859795006236	B2BOB2121786	NB MAGNESIUM 500MG 100TAB	1	6	6.6	1
+313	WOBOWO9003690	220220161	(V) SUNSHINE N MAGNESIUM 400MG 100TABS	1	6	6.6	1
+314	347809060	338384139	HEALTH AID MAGNESIUM BISGLYCINATE 375MG VIT B6 TAB 60S	1	6	6.6	1
+315	ZIBOZI5535	B2BOB25006755	VALUPAK MAGNESIUM 30 TAB	1	6	6.6	1
+316	335439378	733739003690	OH MY OH CALCIUM AND VIT D3 GUMMIES 350G	1	6	6.6	1
+317	5019781010424	8684556261058	SOLGAR CHELATED MAGNESIUM TAB 100S	1	6	6.6	1
+318	5903163605677	74312055355	ADDITIVA MAGNISIUM EFF TAB 10	1	6	6.6	1
+319	859795006755	5019781056132	VITABIOTICS ULTRA VIT D3 2000IU 96 TABS	1	6	6.6	1
+320	5024874016535	XPBOXPVALU493		(Not specified)	1	6	6.6	1
+321	335739891	220095571		(Not specified)	1	6	6.6	1
+322	Y5BOY5PSFM01	628069520200		(Not specified)	1	6	6.6	1
+323	33984007000	965014200007		(Not specified)	1	6	6.6	1
+324	5021265247400	WOBOWO5247400		(Not specified)	1	6	6.6	1
+325	83000164569	B2BOB20164569	NUTRITIONL APPLE CID ER EX STR VINEGAR TAB 100'S	3	7	7.1	33
+326	733739014351	220154604	YOUR GUMMIES APPLE CIDER VINEGAR GUMMIES 60S	3	7	7.1	33
+327	5903163601617	B2BOB23601617	VALUPAK VIT B COMPLEX 60 TABLETS	3	7	7.1	33
+328	868573000106	B2BOB273000106	HEALTH AID SIBERSLIM TABS 60S	2	7	7.1	33
+329	5019781020256	B2BOB21080911	OH MY OH APPLE CIDER VINEGAR GUMMIES 350G	2	7	7.1	33
+330	5903163608531	347828802	NOW B 50 COMPLEX WITH C 100 CAPSULES	2	7	7.1	33
+331	810011082892	B2BOB21082892	NATURES ANSWER NUTRATRIMMAX 180 CAPS	2	7	7.1	33
+332	5903163602416	130322638	NOW GARCINIA 1000MG 120TABS	2	7	7.1	33
+333	220165367	344535280	PAXAS BELLY FAT 120 CAPS	2	7	7.1	33
+334	8684556261003		PHARMAXXI WEIGHT LOSS 4 90TABS	2	7	7.1	33
+335	5024874015095	XPBOXPVALU498	HAID CROMIUM TAB 60S	1	7	7.1	33
+336	5019781010318	XABOXA81010318	WHITE HEALTH SLIM DETOX CAPS 30S	1	7	7.2	19
+337	335754670	WOBOWO410	SUNSHINE N SLIM SUPPORT EFFERV TABS 20S	2	7	7.2	19
+338	628069520262	733739004208	PAXAS SLIMMING TABS 20 EFFERVESCENT TABS	2	7	7.2	19
+339	740985224052		(Not specified)	1	7	7.2	19
+340	740985223994	WOBOWOTEA994	HERBAL SLIMMING TEA NATURAL 24 BAGS	1	7	7.2	19
+341	740985223611	WOBOWOMTC22361	21ST CENTURY HERBAL SLIMMING TEA HONEY LEM 24 BAGS	2	7	7.2	19
+342	740985227909	WOBOWOMTC22792	21ST CENTURY HERBAL SLIMMING TEA GREEN 24 BAGS	1	7	7.2	19
+343	B2BOB246068714		GARDEN GREEN ACAI CLEANSE 48H DETOX 947ML	1	7	7.2	19
+344	733739148995		NOW 5HTP 100 MG 60 VCAPS	1	7	7.3	13
+345	33674616000		NATURES WAY GINKGO 60 VCAPS	1	7	7.3	13
+346	639738171227		TG APPLE CIDER VINEGAR GUMMY ADULTS	1	7	7.3	13
+347	130031905	130031909	NB L CARNITINE 500MG 30TAB	1	7	7.3	13
+348	ZIBOZI817122		BIO N MORINGA SUPER FOOD VEGI 60S CAPS	1	7	7.3	13
+349	74312016837	ZIBOZINB837	NB CHELATED POTASSIUM 100S	1	7	7.3	13
+350	B2BOB236003129	220220534	NB B-COMPLEX T/R + C TABS.	1	7	7.3	13
+351	854936003129	74312011108	NATURES ANSWER CRANBERRY 800MG 90 CAPS	1	7	7.3	13
+352	74312005305	ZIBOZI2005305	NATURES WAY ALIVE CRANRX GUMMY 60S	1	7	7.3	13
+353	B2BOB20161582	WOBO WO41 04 85 9	VITABIOTICS ULTRA CRANBERRY EXTRACT TABS 30S	1	7	7.4	13
+354	WOBOWOMV216	B2BOB22359412	V KYO DOPHILUS PROBIOTICS CRANBERRY EXTRACT 60CAP	1	7	7.4	13
+355	83000161582	33674104859	HEALTH AID CRANPROBIO 30 CAPSULES	1	7	7.4	13
+356	5021265244867	23542359412	NATURES WAY ALIVE B COMPLEX GUMMY 60S	1	7	7.4	13
+357	5019781026074	131167609	HEALTH AID CARBOSLIM CAPS 60S	1	7	7.4	13
+358	WOBOWO4104835	33674104835	MARNYS MEMORY PLUS FOOD SUP 200ML	1	7	7.4	13
+359	733739148995		VITABIOTICS VB NEUROZAN 30 CAPS	1	7	7.5	7
+360	33674616000		BLOOM & QUAINT EASY SLIM 60CAP	1	7	7.5	7
+361	639738171227		NOW GINKO BILOBA 60MG 60CAP	1	7	7.5	7
+362	130031905	130031909	NOW B-100 CAPS 100'S	1	7	7.5	7
+363	ZIBOZI817122		NOW CURCUMIN TURMERIC 60CAP	1	7	7.5	7
+364	74312016837	ZIBOZINB837	SOLARAY B COMPLEX100 50 CAPS	1	7	7.5	7
+365	B2BOB236003129	220220534	NOW L- CARNITINE 500 MG 60 VCAPS	1	7	7.5	7
+366	854936003129	74312011108		(Not specified)	1	7	7.5	7
+367	74312005305	ZIBOZI2005305		(Not specified)	1	7	7.5	7
+368	B2BOB20161582	WOBO WO41 04 85 9		(Not specified)	1	7	7.6	1
+369	WOBOWOMV216	B2BOB22359412		(Not specified)	1	7	7.6	1
+370	83000161582	33674104859		(Not specified)	1	7	7.6	1
+371	5021265244867	23542359412		(Not specified)	1	7	7.6	1
+372	5019781026074	131167609		(Not specified)	1	7	7.6	1
+373	WOBOWO4104835	33674104835		(Not specified)	1	7	7.6	1
+374	733739148995		(Not specified)	1	7	7.6	1
+375	33674616000		(Not specified)	1	7	7.6	1
+376	639738171227		(Not specified)	1	7	7.6	1
+377	130031905	130031909		(Not specified)	1	7	7.6	1
+378	ZIBOZI817122		(Not specified)	1	7	7.6	1
+379	74312016837	ZIBOZINB837		(Not specified)	1	7	7.6	1
+380	B2BOB236003129	220220534		(Not specified)	1	7	7.6	1
+381	854936003129	74312011108		(Not specified)	1	7	7.6	1
+382	74312005305	ZIBOZI2005305		(Not specified)	1	7	7.6	1
+383	5019781022526	341129634	HEALTH AID LARGININE 500MG TAB 60S	4	7	7.6	1`;
 
-    const FIELDS = [
-        { key: 'totalAED', label: 'Total Sales', icon: '💰', kwd: true },
-        { key: 'trn', label: 'Transactions', icon: '🧾' },
-        { key: 'no7AED', label: 'No7 Sales', icon: '💎', kwd: true },
-        { key: 'totalItems', label: 'Units Sold', icon: '📦' },
-        { key: 'footfall', label: 'Footfall', icon: '👣' },
-        { key: 'auraTrn', label: 'Aura Enrolled', icon: '✨', isAura: true }
-    ];
+    let masterProducts = [];
+    let AppState = {
+        currentModule: 1,
+        customData: {} // keys: sl, values: { image: base64, batch, expiry, qty }
+    };
 
-    function renderGrid() {
-        let html = '';
-        FIELDS.forEach(f => {
-            const val = data[f.key] || 0;
-            html += `
-                <div class="entry-card ${f.isAura ? 'aura-grid' : ''}" onclick="openModal('${f.key}', '${f.label}')">
-                    <div class="entry-icon">${f.icon}</div>
-                    <div class="entry-label">${f.label}</div>
-                    <div class="entry-val">${Number(val).toLocaleString()}</div>
-                    ${f.kwd ? `<span class="entry-kwd">${(val / 12).toFixed(2)} KWD</span>` : ''}
-                </div>
-            `;
+    // Load custom data if any
+    try {
+        const saved = localStorage.getItem('aura_planogram_state');
+        if (saved) AppState.customData = JSON.parse(saved);
+    } catch(e) {}
+
+    function saveState() {
+        try { localStorage.setItem('aura_planogram_state', JSON.stringify(AppState.customData)); } 
+        catch(e) { console.warn("Quota Exceeded"); }
+    }
+
+    // 2. PARSE TSV DATA
+    function parseData() {
+        const rows = RAW_TSV_DATA.trim().split('\n');
+        rows.forEach(row => {
+            const cols = row.split('\t');
+            if (cols.length >= 8) {
+                masterProducts.push({
+                    sl: cols[0],
+                    rms: cols[1].trim(),
+                    alshaya: cols[2].trim(),
+                    desc: cols[3].trim() || "(Awaiting Description)",
+                    facing: parseInt(cols[4]) || 1,
+                    module: parseInt(cols[5]) || 1,
+                    shelf: cols[6].trim() || '1.1',
+                    notch: cols[7].trim() || ''
+                });
+            }
         });
-
-        const auraPct = data.trn > 0 ? ((data.auraTrn / data.trn) * 100).toFixed(1) : '0.0';
-        html += `
-            <div class="entry-card aura-grid">
-                <div class="entry-icon">📊</div>
-                <div class="entry-label">Aura Rate</div>
-                <div class="entry-val">${auraPct}%</div>
-            </div>
-        `;
-        document.getElementById('input-grid').innerHTML = html;
-        updateKPIs();
     }
 
-    function updateKPIs() {
-        const atv = data.trn > 0 ? (data.totalAED / data.trn) : 0;
-        document.getElementById('k-atv').innerText = atv.toFixed(2);
-        document.getElementById('k-atv-kwd').innerText = (atv / 12).toFixed(2) + " KWD";
-        document.getElementById('k-ipc').innerText = data.trn > 0 ? (data.totalItems / data.trn).toFixed(2) : '0.00';
-        document.getElementById('k-cvr').innerText = data.footfall > 0 ? ((data.trn / data.footfall) * 100).toFixed(1) + '%' : '0.0%';
-        document.getElementById('k-no7').innerText = data.totalAED > 0 ? ((data.no7AED / data.totalAED) * 100).toFixed(1) + '%' : '0.0%';
+    // 3. UI RENDERING
+    function switchView(viewId) {
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        document.getElementById(`view-${viewId}`).classList.add('active');
+        if(viewId === 'planner') renderPlanner();
+        if(viewId === 'settings') renderSettingsGrid();
     }
 
-    function openModal(key, label) {
-        currentKey = key;
-        formula = data[key] ? data[key].toString() : '';
-        document.getElementById('modal-title').innerText = label;
-        document.getElementById('calc-main').innerText = formula || '0';
-        document.getElementById('calc-formula').innerText = '';
-        document.getElementById('calc-modal').classList.add('show');
+    function switchModule(modNum) {
+        AppState.currentModule = modNum;
+        renderTabs();
+        renderPlanner();
     }
 
-    function closeModal() { document.getElementById('calc-modal').classList.remove('show'); }
-
-    function press(val) {
-        const main = document.getElementById('calc-main');
-        const formDisp = document.getElementById('calc-formula');
-        if (val === 'C') { formula = ''; main.innerText = '0'; formDisp.innerText = ''; }
-        else if (val === '=') {
-            try {
-                data[currentKey] = parseFloat(eval(formula).toFixed(2)) || 0;
-                renderGrid(); closeModal();
-            } catch (e) { main.innerText = 'Error'; formula = ''; }
-        } else {
-            formula += val; main.innerText = formula;
-            try { let temp = eval(formula.replace(/[+\-]$/, "")); formDisp.innerText = temp !== undefined ? "= " + temp : ""; } catch(e) {}
+    function renderTabs() {
+        const tabsContainer = document.getElementById('moduleTabs');
+        let html = '';
+        for(let i=1; i<=7; i++) {
+            html += `<div class="tab ${AppState.currentModule === i ? 'active' : ''}" onclick="switchModule(${i})">Module ${i}</div>`;
         }
+        tabsContainer.innerHTML = html;
     }
 
-    function saveData() { alert("Report Saved!"); }
-    renderGrid();
+    function renderPlanner() {
+        const container = document.getElementById('racks-container');
+        let html = '';
+        
+        // Modules 1-7, 6 Racks each (e.g. 1.1 to 1.6)
+        const m = AppState.currentModule;
+        document.getElementById('currentModuleLabel').textContent = m;
+
+        for (let s = 1; s <= 6; s++) {
+            const shelfCode = `${m}.${s}`;
+            let products = masterProducts.filter(p => p.shelf === shelfCode);
+            
+            // Layout enforcing 6-product visual blocks
+            // If there are more than 6, it will wrap onto multiple 6-slot rows within the same rack container
+            const totalSlots = Math.max(6, Math.ceil(products.length / 6) * 6);
+
+            html += `
+            <div class="rack">
+                <div class="rack-header">
+                    <span>Rack Module ${shelfCode}</span>
+                    <span style="color:var(--accent-cyan);">${products.length} Items</span>
+                </div>
+                <div class="shelf-grid">`;
+
+            for (let i = 0; i < totalSlots; i++) {
+                if (i < products.length) {
+                    const p = products[i];
+                    const state = AppState.customData[p.sl] || {};
+                    const isOos = !state.qty || state.qty === 0;
+                    
+                    const facingBadge = p.facing > 1 ? `<div class="facing-badge">x${p.facing}</div>` : '';
+                    const bgStyle = state.image ? `background-image: url(${state.image}); color: transparent; border-color: var(--accent-cyan);` : '';
+
+                    html += `
+                    <div class="slot" onclick="openEditModal('${p.sl}', '${shelfCode}')">
+                        <div class="bottle" style="${bgStyle}">
+                            ${facingBadge}
+                            ${!state.image ? '💊' : ''}
+                        </div>
+                        <div class="prod-name" title="${p.desc}">${p.desc}</div>
+                        <div class="prod-meta" style="color: ${isOos ? 'var(--accent-pink)' : '#10b981'}">${isOos ? 'OUT' : state.qty + ' in stock'}</div>
+                    </div>`;
+                } else {
+                    html += `
+                    <div class="slot" onclick="openEditModal('NEW', '${shelfCode}')">
+                        <div class="bottle empty">+</div>
+                        <div class="prod-name" style="color: #94a3b8;">Empty Space</div>
+                    </div>`;
+                }
+            }
+            html += `</div></div>`;
+        }
+        container.innerHTML = html;
+    }
+
+    function renderSettingsGrid() {
+        const tbody = document.getElementById('settings-grid-body');
+        let html = '';
+        masterProducts.forEach(p => {
+            const state = AppState.customData[p.sl] || {};
+            html += `
+            <tr>
+                <td style="font-weight: bold; color: var(--accent-cyan);">${p.sl}</td>
+                <td>
+                    ${state.image ? `<img src="${state.image}" class="thumbnail">` : '<span style="font-size:16px;">💊</span>'}
+                </td>
+                <td title="${p.desc}" style="font-weight: 600;">${p.desc.substring(0, 30)}...</td>
+                <td style="font-family: monospace;">${p.rms}</td>
+                <td><input type="date" value="${state.expiry || ''}" onchange="quickUpdate('${p.sl}', 'expiry', this.value)"></td>
+                <td><input type="text" value="${state.batch || ''}" placeholder="Batch" onchange="quickUpdate('${p.sl}', 'batch', this.value)"></td>
+                <td><input type="number" value="${state.qty || ''}" placeholder="0" style="width: 60px;" onchange="quickUpdate('${p.sl}', 'qty', this.value)"></td>
+                <td><input type="number" value="${p.facing || 1}" style="width: 50px;" onchange="updateMasterFacing('${p.sl}', this.value)"></td>
+                <td>
+                    <div style="background: rgba(6, 182, 212, 0.1); padding: 4px 8px; border-radius: 4px; text-align: center; cursor: pointer; position: relative;">
+                        <input type="file" accept="image/*" onchange="handleGridImage(event, '${p.sl}')" style="position:absolute; inset:0; opacity:0; cursor:pointer;">
+                        <span style="color:var(--accent-cyan); font-weight:bold; font-size:10px;">Upload</span>
+                    </div>
+                </td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
+    }
+
+    /* =========================================================
+       4. IMAGE COMPRESSION & FILE UPLOAD
+       ========================================================= */
+    function compressImage(file, callback) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_DIM = 200; 
+                let w = img.width, h = img.height;
+                if (w > h && w > MAX_DIM) { h *= MAX_DIM / w; w = MAX_DIM; }
+                else if (h > MAX_DIM) { w *= MAX_DIM / h; h = MAX_DIM; }
+                canvas.width = w; canvas.height = h;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+                callback(canvas.toDataURL('image/jpeg', 0.8));
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    let tempModalImage = null;
+
+    document.getElementById('mod-img').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if(!file) return;
+        compressImage(file, (base64) => {
+            document.getElementById('mod-img-preview').src = base64;
+            document.getElementById('mod-img-preview').style.display = 'block';
+            tempModalImage = base64;
+        });
+    });
+
+    function handleGridImage(e, sl) {
+        const file = e.target.files[0];
+        if(!file) return;
+        compressImage(file, (base64) => {
+            if(!AppState.customData[sl]) AppState.customData[sl] = {};
+            AppState.customData[sl].image = base64;
+            saveState();
+            renderSettingsGrid();
+            renderPlanner();
+        });
+    }
+
+    function quickUpdate(sl, field, value) {
+        if(!AppState.customData[sl]) AppState.customData[sl] = {};
+        if(field === 'qty') AppState.customData[sl].qty = parseInt(value) || 0;
+        else AppState.customData[sl][field] = value;
+        saveState();
+        renderPlanner();
+    }
+
+    function updateMasterFacing(sl, value) {
+        const p = masterProducts.find(x => x.sl === sl);
+        if(p) p.facing = parseInt(value) || 1;
+        renderPlanner();
+    }
+
+    /* =========================================================
+       5. MODAL LOGIC
+       ========================================================= */
+    let currentEditSl = null;
+    let currentNewShelfCode = '';
+
+    function openEditModal(sl, shelfCode = '') {
+        currentEditSl = sl;
+        currentNewShelfCode = shelfCode;
+        tempModalImage = null;
+        
+        let p;
+        if (sl === 'NEW') {
+            p = { sl: 'NEW', rms: '', alshaya: '', desc: '', facing: 1 };
+        } else {
+            p = masterProducts.find(x => x.sl === sl);
+        }
+        
+        const state = AppState.customData[sl] || {};
+
+        document.getElementById('mod-desc').value = p.desc;
+        document.getElementById('mod-rms').value = p.rms;
+        document.getElementById('mod-alshaya').value = p.alshaya;
+        document.getElementById('mod-batch').value = state.batch || '';
+        document.getElementById('mod-expiry').value = state.expiry || '';
+        document.getElementById('mod-qty').value = state.qty || '';
+        document.getElementById('mod-facing').value = p.facing || 1;
+        
+        const preview = document.getElementById('mod-img-preview');
+        if (state.image) {
+            preview.src = state.image;
+            preview.style.display = 'block';
+        } else {
+            preview.src = '';
+            preview.style.display = 'none';
+        }
+
+        document.getElementById('edit-modal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('edit-modal').classList.remove('active');
+    }
+
+    function saveEdit() {
+        let sl = currentEditSl;
+        let p;
+
+        if (sl === 'NEW') {
+            sl = 'N_' + Date.now();
+            p = {
+                sl: sl,
+                rms: document.getElementById('mod-rms').value,
+                alshaya: document.getElementById('mod-alshaya').value,
+                desc: document.getElementById('mod-desc').value || "New Product Entry",
+                facing: parseInt(document.getElementById('mod-facing').value) || 1,
+                module: AppState.currentModule,
+                shelf: currentNewShelfCode,
+                notch: ''
+            };
+            masterProducts.push(p);
+        } else {
+            p = masterProducts.find(x => x.sl === sl);
+            p.desc = document.getElementById('mod-desc').value;
+            p.rms = document.getElementById('mod-rms').value;
+            p.alshaya = document.getElementById('mod-alshaya').value;
+            p.facing = parseInt(document.getElementById('mod-facing').value) || 1;
+        }
+
+        if(!AppState.customData[sl]) AppState.customData[sl] = {};
+        AppState.customData[sl].batch = document.getElementById('mod-batch').value;
+        AppState.customData[sl].expiry = document.getElementById('mod-expiry').value;
+        AppState.customData[sl].qty = parseInt(document.getElementById('mod-qty').value) || 0;
+        
+        if (tempModalImage) {
+            AppState.customData[sl].image = tempModalImage;
+        }
+
+        saveState();
+        closeModal();
+        renderPlanner();
+        renderSettingsGrid();
+    }
+
+    // Initialize
+    parseData();
+    renderTabs();
+    renderPlanner();
+
 </script>
 </body>
 </html>
-
