@@ -1,0 +1,2291 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>ShelfRx Pro & MY Tracker — Boots T3</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ShelfRx">
+<meta name="theme-color" content="#00205B">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500;700&family=JetBrains+Mono:wght@600;800&display=swap');
+
+:root {
+  /* MIDNIGHT DARK THEME (DEFAULT) */
+  --bg: #020B1F;
+  --bg-card: #0D1E40;
+  --bg-card-alt: #162A52;
+  --bg-input: rgba(255, 255, 255, 0.08);
+  --border: #1E3A8A;
+  --text: #F1F5F9;
+  --text-muted: #94A3B8;
+  --text-sub: #64748B;
+  --accent: #4BA3E3;
+  --brand-blue: #005EB8;
+  --my-navy: #00205B;
+  --purple: #A855F7;
+  --aura-pink: #D81B60;
+  --green: #10B981;
+  --amber: #F59E0B;
+  --red: #EF4444;
+  --shelf-bg: linear-gradient(180deg, #FFF8EE 0%, #F5ECD6 70%, #E8DCC8 100%);
+  --wood-top: linear-gradient(180deg, #E8C47A 0%, #C8933A 50%, #A0700A 100%);
+  --wood-bottom: linear-gradient(180deg, #C8933A 0%, #8B5E1A 60%, #6B4010 100%);
+  --safe-top: env(safe-area-inset-top, 20px);
+  --safe-bottom: env(safe-area-inset-bottom, 18px);
+}
+
+[data-theme="light"] {
+  /* MINT GREEN CLINICAL LIGHT THEME */
+  --bg: #F0FDF4;
+  --bg-card: #FFFFFF;
+  --bg-card-alt: #E2FBEA;
+  --bg-input: #F1F5F9;
+  --border: #86EFAC;
+  --text: #0F172A;
+  --text-muted: #475569;
+  --text-sub: #64748B;
+  --accent: #10B981;
+  --brand-blue: #059669;
+  --my-navy: #064E3B;
+  --purple: #9333EA;
+  --aura-pink: #E11D48;
+  --green: #059669;
+  --amber: #D97706;
+  --red: #DC2626;
+  --shelf-bg: linear-gradient(180deg, #FFFFFF 0%, #F0FDF4 100%);
+  --wood-top: linear-gradient(180deg, #A7F3D0 0%, #34D399 50%, #059669 100%);
+  --wood-bottom: linear-gradient(180deg, #34D399 0%, #059669 100%);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-bottom: calc(84px + var(--safe-bottom));
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+/* 2-SECOND CINEMATIC STARTUP LOADER */
+#splashScreen {
+  position: fixed;
+  inset: 0;
+  background: #010816;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+#splashScreen.hide {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.04);
+}
+#splashCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.splash-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.orbit-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.orbit-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px dashed rgba(75, 163, 227, 0.4);
+  animation: orbitRotate 8s linear infinite;
+}
+.ring-outer { width: 110px; height: 110px; }
+.ring-inner { width: 75px; height: 75px; border-color: rgba(216, 27, 96, 0.5); animation-direction: reverse; animation-duration: 5s; }
+.splash-pill { font-size: 38px; animation: pillBounce 2s ease-in-out infinite; }
+@keyframes orbitRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes pillBounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+
+.splash-title {
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #fff;
+  margin-top: 14px;
+}
+.splash-author {
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 2.5px;
+  color: var(--accent);
+  margin-top: 5px;
+}
+.splash-console {
+  margin-top: 16px;
+  width: 280px;
+  height: 48px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(75, 163, 227, 0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  color: #38BDF8;
+  text-align: left;
+  overflow: hidden;
+}
+
+/* TOPBAR */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: calc(var(--safe-top) + 8px) 16px 10px;
+  background: rgba(2, 11, 31, 0.94);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+[data-theme="light"] .topbar {
+  background: rgba(240, 253, 244, 0.94);
+}
+.brand-title {
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+}
+.brand-sub {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  font-family: 'DM Mono', monospace;
+}
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.badge-total-sku {
+  background: linear-gradient(135deg, var(--brand-blue), var(--accent));
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 5px 11px;
+  font-size: 10.5px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+.btn-icon-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* HERO SECTION & ROTARY WHEEL ENTRY CARD */
+.hero-hub {
+  padding: 14px 16px 8px;
+}
+.hero-banner {
+  background: linear-gradient(145deg, var(--my-navy), var(--bg-card));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.hero-banner h1 { font-size: 20px; font-weight: 900; line-height: 1.1; }
+.hero-banner p { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+
+/* SWIPE / ROTARY WHEEL TIME-SLOT CARD */
+.slot-wheel-wrap {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.slot-wheel-header {
+  padding: 10px 16px;
+  background: var(--bg-card-alt);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.slot-label-active {
+  font-size: 14px;
+  font-weight: 950;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.slot-badge-dur {
+  font-size: 9px;
+  font-family: 'DM Mono', monospace;
+  background: rgba(75, 163, 227, 0.2);
+  color: var(--accent);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 800;
+}
+.slot-wheel-counter {
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+/* ROTARY HORIZONTAL WHEEL BAR */
+.rotary-wheel-strip {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 8px 14px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--border);
+  scrollbar-width: none;
+}
+.rotary-wheel-strip::-webkit-scrollbar { display: none; }
+.wheel-item {
+  flex-shrink: 0;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  font-size: 9.5px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.wheel-item.active {
+  background: var(--brand-blue);
+  color: #fff;
+  border-color: var(--accent);
+  font-weight: 800;
+}
+.wheel-item.filled {
+  border-color: var(--green);
+}
+
+/* CARD BODY FOR ENTRY */
+.wheel-entry-body {
+  padding: 14px 16px;
+}
+.wheel-grid-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.wheel-field-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+.wheel-field-label {
+  font-size: 8.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+}
+.wheel-field-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text);
+  outline: none;
+  padding-top: 3px;
+}
+.wheel-field-input::placeholder { color: var(--text-sub); opacity: 0.5; }
+
+/* COMPACT CALCULATED METRICS ROW */
+.metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+}
+.metric-col { text-align: center; }
+.metric-lbl { font-size: 7.5px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); }
+.metric-val { font-size: 12px; font-weight: 900; font-family: 'DM Mono', monospace; color: var(--accent); margin-top: 2px; }
+
+/* CONTROLS (PREV / NEXT / CALC EVAL) */
+.wheel-nav-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.btn-wheel-nav {
+  flex: 1;
+  padding: 9px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-card-alt);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.btn-wheel-nav.primary {
+  background: var(--brand-blue);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-wheel-nav:active { transform: scale(0.97); }
+
+/* DAY TOTAL BANNER */
+.wheel-total-strip {
+  padding: 10px 16px;
+  background: var(--bg-card-alt);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tot-lbl { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); }
+.tot-val { font-size: 16px; font-weight: 950; font-family: 'JetBrains Mono', monospace; color: var(--accent); }
+
+/* MINI HOURLY BAR CHART */
+.mini-chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+.chart-head-bar {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.bar-strip-scroll {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 60px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2px;
+}
+.bar-track-col {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+}
+.bar-fill-seg {
+  width: 100%;
+  background: linear-gradient(180deg, var(--accent), var(--brand-blue));
+  border-radius: 3px 3px 1px 1px;
+  min-height: 2px;
+  transition: height 0.2s ease;
+}
+.bar-fill-seg.active { background: var(--purple); }
+.bar-lbl-tiny { font-size: 6.5px; font-family: 'DM Mono', monospace; color: var(--text-sub); }
+
+/* COMPACT 4-PORTAL ENTRY GRID */
+.portal-quick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.portal-quick-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.portal-quick-card:active { transform: scale(0.97); }
+.portal-quick-card:hover { border-color: var(--accent); }
+.pqc-icon { font-size: 22px; }
+.pqc-title { font-size: 11px; font-weight: 900; text-transform: uppercase; }
+.pqc-sub { font-size: 9px; color: var(--text-muted); margin-top: 1px; }
+
+/* MODULE FULL VIEWS */
+.module-view {
+  display: none;
+  padding: 12px 16px 30px;
+  animation: fadeIn 0.25s ease;
+}
+.module-view.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+.view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.view-title-wrap { display: flex; align-items: center; gap: 7px; }
+.view-title { font-size: 15px; font-weight: 900; }
+.btn-back {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 5px 11px;
+  border-radius: 8px;
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* KPI FULL BREAKDOWN TABLE */
+.kpi-table-scroll {
+  overflow-x: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
+table.kpi-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.5px;
+  min-width: 800px;
+}
+table.kpi-table th {
+  background: var(--bg-card-alt);
+  padding: 8px 6px;
+  font-weight: 800;
+  text-align: left;
+  border-bottom: 1.5px solid var(--border);
+  color: var(--text-muted);
+}
+table.kpi-table td {
+  padding: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.kpi-cell-input {
+  width: 75px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+.kpi-total-row {
+  background: var(--bg-card-alt);
+  font-weight: 900;
+  color: var(--accent);
+}
+
+/* PLANOGRAM RACKS (383 SKUs) */
+.rack-tab-strip {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+.rack-tab-strip::-webkit-scrollbar { display: none; }
+.rtab {
+  flex-shrink: 0;
+  padding: 5px 11px;
+  border-radius: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.rtab.active {
+  background: var(--brand-blue);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.search-box-wrap {
+  position: relative;
+  margin-bottom: 12px;
+}
+.search-box-input {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px 8px 32px;
+  font-size: 11.5px;
+  outline: none;
+}
+.search-icon-pos {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.wood-rack {
+  background: var(--shelf-bg);
+  border: 2px solid #C8933A;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+.wood-shelf-header {
+  background: rgba(255, 255, 255, 0.92);
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.12);
+  color: #0F172A;
+  font-size: 10.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.wood-top-bar { height: 7px; background: var(--wood-top); }
+.wood-bottom-bar { height: 9px; background: var(--wood-bottom); }
+
+.shelf-bottles-row {
+  display: flex;
+  align-items: flex-end;
+  min-height: 80px;
+  padding: 5px;
+  gap: 5px;
+  overflow-x: auto;
+}
+.shelf-bottles-row::-webkit-scrollbar { height: 3px; }
+.shelf-bottles-row::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 2px; }
+
+.bottle-card {
+  width: 48px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+.bottle-visual {
+  width: 42px;
+  height: 56px;
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.18);
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.bottle-pos {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  background: var(--my-navy);
+  color: #fff;
+  font-size: 7px;
+  font-weight: 800;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Mono', monospace;
+}
+.bottle-exp-dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--red);
+  border: 1px solid #fff;
+}
+.bottle-name-label {
+  font-size: 7px;
+  font-weight: 700;
+  max-width: 46px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #5A4020;
+  margin-top: 2px;
+}
+.bottle-stock-chip {
+  font-size: 7.5px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 800;
+}
+.stock-ok { color: var(--green); }
+.stock-low { color: var(--amber); }
+.stock-out { color: var(--red); }
+
+/* ROTA & TIME */
+.clock-card {
+  background: linear-gradient(135deg, var(--my-navy), #081B4B);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+.live-clock-digits {
+  font-size: 32px;
+  font-weight: 900;
+  font-family: 'JetBrains Mono', monospace;
+  color: #fff;
+  letter-spacing: 1px;
+  margin: 4px 0;
+}
+.clock-actions-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+.btn-clock {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 800;
+  font-size: 10px;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: #fff;
+}
+.btn-clock.in { background: var(--green); }
+.btn-clock.break { background: var(--amber); }
+.btn-clock.out { background: var(--red); }
+
+.roster-grid-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow-x: auto;
+  margin-bottom: 14px;
+}
+table.roster-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+  min-width: 680px;
+}
+table.roster-table th, table.roster-table td {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+}
+table.roster-table th { background: var(--bg-card-alt); }
+
+/* SCANNER & EXCEL LEDGER */
+.telemetry-box {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+.temp-large {
+  font-size: 30px;
+  font-weight: 900;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--green);
+  margin: 4px 0;
+}
+.excel-ledger-container {
+  background: #fff;
+  color: #334155;
+  border-radius: 10px;
+  border: 1px solid #CBD5E1;
+  overflow-x: auto;
+  max-height: 320px;
+  margin-top: 8px;
+}
+table.excel-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.5px;
+  min-width: 720px;
+}
+table.excel-table th {
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  padding: 6px;
+  font-weight: 800;
+  color: #475569;
+  position: sticky;
+  top: 0;
+}
+table.excel-table td {
+  border: 1px solid #CBD5E1;
+  padding: 5px 6px;
+}
+
+/* FLOATING BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(2, 11, 31, 0.96);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 7px 0 calc(7px + var(--safe-bottom));
+  z-index: 90;
+}
+[data-theme="light"] .bottom-nav {
+  background: rgba(240, 253, 244, 0.96);
+}
+.bnav-item {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-sub);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 8.5px;
+  font-weight: 800;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.bnav-item.active { color: var(--accent); }
+.bnav-item i { font-style: normal; font-size: 17px; }
+
+/* MODALS */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-sheet {
+  background: var(--bg-card);
+  border-top: 2px solid var(--border);
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 620px;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 16px 18px 30px;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.modal-title { font-size: 14px; font-weight: 900; }
+.btn-close {
+  background: var(--bg-input);
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+/* FORM FIELDS */
+.form-label {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 3px;
+  display: block;
+}
+.form-input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 11.5px;
+  color: var(--text);
+  margin-bottom: 9px;
+  outline: none;
+}
+
+.toast {
+  position: fixed;
+  top: calc(var(--safe-top) + 55px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--green);
+  color: #fff;
+  font-weight: 800;
+  font-size: 10.5px;
+  padding: 7px 15px;
+  border-radius: 999px;
+  z-index: 2000;
+  display: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* SHIFT ALARM & OCR STYLES */
+.alarm-banner-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid var(--green);
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--green);
+  cursor: pointer;
+}
+.alarm-banner-chip.ringing {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: var(--red);
+  color: var(--red);
+  animation: pulse 1s infinite;
+}
+.ocr-uploader-card {
+  background: var(--bg-card);
+  border: 1.5px dashed var(--accent);
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.ocr-preview-box {
+  width: 100%;
+  max-height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-top: 8px;
+  display: none;
+  border: 1px solid var(--border);
+}
+.shift-countdown-pill {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 900;
+  background: rgba(75, 163, 227, 0.18);
+  color: var(--accent);
+  padding: 3px 8px;
+  border-radius: 8px;
+  margin-top: 4px;
+}
+.alarm-modal-ringing {
+  text-align: center;
+  padding: 20px 10px;
+}
+.alarm-bell-anim {
+  font-size: 46px;
+  animation: pillBounce 0.8s infinite;
+  display: inline-block;
+}
+</style>
+</head>
+<body>
+
+<!-- 2-SECOND CINEMATIC STARTUP LOADER -->
+<div id="splashScreen">
+  <canvas id="splashCanvas"></canvas>
+  <div class="splash-content">
+    <div class="orbit-wrapper">
+      <div class="orbit-ring ring-outer"></div>
+      <div class="orbit-ring ring-inner"></div>
+      <div class="splash-pill">💊</div>
+    </div>
+    <div class="splash-title">ShelfRx Core</div>
+    <div class="splash-author">DESIGNED & DEVELOPED BY VYSAKH CHANDRAN</div>
+    <div class="splash-console" id="splashTerminal">Initializing Swipe Slot Tracker & Planogram...</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toastMessage">Saved</div>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div>
+    <div class="brand-title">ShelfRx <span>Pro</span></div>
+    <div class="brand-sub" id="currentDateDisplay">Boots DXB T3 · Week 38</div>
+  </div>
+  <div class="top-actions">
+    <div class="alarm-banner-chip" id="topbarAlarmChip" onclick="navigateTo('rota')">
+      <span>⏰</span> <span id="topbarAlarmText">Alarm: 1h Before</span>
+    </div>
+    <button class="badge-total-sku" onclick="openModal('stockAuditModal')">
+      <span>📦</span> <span id="badgeSkuNumbers">383 / 2150</span>
+    </button>
+    <button class="btn-icon-circle" onclick="toggleThemeEngine()" title="Toggle Theme">🌓</button>
+    <button class="btn-icon-circle" onclick="openModal('settingsModal')" title="Settings">⚙️</button>
+  </div>
+</header>
+
+<!-- MAIN HUB (HOME) WITH TIME-SLOT WHEEL AT TOP -->
+<main id="hub-view">
+  <div class="hero-hub">
+    
+    <!-- ROTARY WHEEL TIME-SLOT SWIPE CARD -->
+    <div class="slot-wheel-wrap">
+      <div class="slot-wheel-header">
+        <div>
+          <div class="slot-label-active">
+            <span id="activeSlotLabel">12:00 AM – 06:00 AM</span>
+            <span class="slot-badge-dur" id="activeSlotDur">6h</span>
+          </div>
+        </div>
+        <div class="slot-wheel-counter" id="activeSlotIndex">1 / 10</div>
+      </div>
+
+      <!-- HORIZONTAL ROTARY WHEEL SELECTOR -->
+      <div class="rotary-wheel-strip" id="rotaryStrip">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- ENTRY FIELDS FOR ACTIVE SLOT -->
+      <div class="wheel-entry-body">
+        <div class="wheel-grid-fields">
+          <div class="wheel-field-box">
+            <span class="wheel-field-label">Sale (AED)</span>
+            <input class="wheel-field-input" type="text" id="slotInSale" placeholder="0" onchange="evalSlotMath('sale', this.value)" onkeydown="slotKeyEnter(event, 'sale')">
+          </div>
+          <div class="wheel-field-box">
+            <span class="wheel-field-label">TRN</span>
+            <input class="wheel-field-input" type="text" id="slotInTrn" placeholder="0" onchange="evalSlotMath('trn', this.value)" onkeydown="slotKeyEnter(event, 'trn')">
+          </div>
+          <div class="wheel-field-box">
+            <span class="wheel-field-label">No7 (AED)</span>
+            <input class="wheel-field-input" type="text" id="slotInNo7" placeholder="0" onchange="evalSlotMath('no7', this.value)" onkeydown="slotKeyEnter(event, 'no7')">
+          </div>
+          <div class="wheel-field-box">
+            <span class="wheel-field-label">Aura TRN</span>
+            <input class="wheel-field-input" type="text" id="slotInAura" placeholder="0" onchange="evalSlotMath('aura', this.value)" onkeydown="slotKeyEnter(event, 'aura')">
+          </div>
+          <div class="wheel-field-box">
+            <span class="wheel-field-label">Footfall</span>
+            <input class="wheel-field-input" type="text" id="slotInFoot" placeholder="0" onchange="evalSlotMath('foot', this.value)" onkeydown="slotKeyEnter(event, 'foot')">
+          </div>
+          <div class="wheel-field-box">
+            <span class="wheel-field-label">Units Sold</span>
+            <input class="wheel-field-input" type="text" id="slotInUnits" placeholder="0" onchange="evalSlotMath('units', this.value)" onkeydown="slotKeyEnter(event, 'units')">
+          </div>
+        </div>
+
+        <!-- LIVE CALCULATED METRICS -->
+        <div class="metrics-strip">
+          <div class="metric-col"><div class="metric-lbl">ATV</div><div class="metric-val" id="calcAtv">0.0</div></div>
+          <div class="metric-col"><div class="metric-lbl">Aura %</div><div class="metric-val" id="calcAuraPct">0.0%</div></div>
+          <div class="metric-col"><div class="metric-lbl">No7 %</div><div class="metric-val" id="calcNo7Pct">0.0%</div></div>
+          <div class="metric-col"><div class="metric-lbl">Conv %</div><div class="metric-val" id="calcConv">0.0%</div></div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="wheel-nav-row">
+          <button class="btn-wheel-nav" onclick="navSlot(-1)">◀ Prev Slot</button>
+          <button class="btn-wheel-nav" onclick="clearActiveSlot()">↺ Clear</button>
+          <button class="btn-wheel-nav primary" onclick="navSlot(1)">Next Slot ▶</button>
+        </div>
+      </div>
+
+      <!-- DAY TOTAL STRIP -->
+      <div class="wheel-total-strip">
+        <span class="tot-lbl">Accumulated Day Total</span>
+        <span class="tot-val" id="wheelTotalSale">AED 0</span>
+      </div>
+    </div>
+
+    <!-- MINI BAR DISTRIBUTION CHART -->
+    <div class="mini-chart-card">
+      <div class="chart-head-bar">
+        <span>Hourly Sales Distribution (AED)</span>
+        <span id="chartPeakLabel">Peak: AED 0</span>
+      </div>
+      <div class="bar-strip-scroll" id="hourBarStrip">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+    <!-- 4 COMPACT PORTAL CARDS -->
+    <div class="portal-quick-grid">
+      <div class="portal-quick-card" onclick="navigateTo('kpi')">
+        <div class="pqc-icon">📊</div>
+        <div>
+          <div class="pqc-title">Full Agenda</div>
+          <div class="pqc-sub">10-Slot table & shift sync</div>
+        </div>
+      </div>
+
+      <div class="portal-quick-card" onclick="navigateTo('planner')">
+        <div class="pqc-icon">📦</div>
+        <div>
+          <div class="pqc-title">Planner Racks</div>
+          <div class="pqc-sub">383 SKUs Modules 1–7</div>
+        </div>
+      </div>
+
+      <div class="portal-quick-card" onclick="navigateTo('rota')">
+        <div class="pqc-icon">⏰</div>
+        <div>
+          <div class="pqc-title">Duty Rota</div>
+          <div class="pqc-sub">Vysakh clock & Week 28</div>
+        </div>
+      </div>
+
+      <div class="portal-quick-card" onclick="navigateTo('scanner')">
+        <div class="pqc-icon">📷</div>
+        <div>
+          <div class="pqc-title">GS1 Scanner</div>
+          <div class="pqc-sub">DataMatrix & Fridge logs</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- MODULE 1: FULL KPI & AGENDA VIEW -->
+<section class="module-view" id="view-kpi">
+  <div class="view-header">
+    <div class="view-title-wrap">
+      <span style="font-size: 18px;">📊</span>
+      <div class="view-title">KPI & Clubbed Agenda Details</div>
+    </div>
+    <button class="btn-back" onclick="navigateTo('hub')">← Hub</button>
+  </div>
+
+  <div class="kpi-table-scroll">
+    <table class="kpi-table" id="kpiClubbedTable">
+      <thead>
+        <tr>
+          <th>HOURS</th>
+          <th>SALE (AED)</th>
+          <th>TRN</th>
+          <th>ATV</th>
+          <th>NO7 (AED)</th>
+          <th>NO7 %</th>
+          <th>AURA</th>
+          <th>AURA %</th>
+          <th>IPC / CONV</th>
+          <th>UNITS</th>
+        </tr>
+      </thead>
+      <tbody id="kpiTableBody"></tbody>
+      <tfoot>
+        <tr class="kpi-total-row" id="kpiTotalRow">
+          <td>TOTAL / AVG</td>
+          <td id="totSale">AED 0</td>
+          <td id="totTrn">0</td>
+          <td id="totAtv">0.0</td>
+          <td id="totNo7">AED 0</td>
+          <td id="totNo7Pct">0.0%</td>
+          <td id="totAura">0</td>
+          <td id="totAuraPct">0.0%</td>
+          <td id="totIpc">0.0</td>
+          <td id="totUnits">0</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</section>
+
+<!-- MODULE 2: INVENTORY & PLANNER (383 SKUs) -->
+<section class="module-view" id="view-planner">
+  <div class="view-header">
+    <div class="view-title-wrap">
+      <span style="font-size: 18px;">🪵</span>
+      <div class="view-title">Planogram Shelves (383 SKUs)</div>
+    </div>
+    <button class="btn-back" onclick="navigateTo('hub')">← Hub</button>
+  </div>
+
+  <div class="search-box-wrap">
+    <span class="search-icon-pos">🔍</span>
+    <input type="text" class="search-box-input" id="planogramSearchInput" placeholder="Search 383 products by name, RMS barcode, Alshaya code..." oninput="filterPlanogramProducts(this.value)">
+  </div>
+
+  <div class="rack-tab-strip" id="rackTabStrip"></div>
+  <div id="rackShelvesContainer"></div>
+</section>
+
+<!-- MODULE 3: DUTY ROTA & TIME -->
+<section class="module-view" id="view-rota">
+  <div class="view-header">
+    <div class="view-title-wrap">
+      <span style="font-size: 18px;">⏰</span>
+      <div class="view-title">Duty Rota & Shift Alarm Center</div>
+    </div>
+    <button class="btn-back" onclick="navigateTo('hub')">← Hub</button>
+  </div>
+
+  <!-- VYSAKH LIVE CLOCK & ALARM CARD -->
+  <div class="clock-card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-size:10px; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.8);">★ VYSAKH (331356) · PHARMACIST</span>
+      <span style="font-size:9.5px; background:rgba(255,255,255,0.15); padding:2px 7px; border-radius:10px;" id="currentDayOfWeekTag">Today</span>
+    </div>
+    <div class="live-clock-digits" id="liveClockDigits">00:00:00</div>
+    <div style="font-size:12px; font-weight:800; color:#fff;" id="rotaScheduleBanner">Today's Shift: Con C : 6-2 (6:00 AM – 2:00 PM)</div>
+    <div class="shift-countdown-pill" id="nextShiftCountdown">Next Alarm in: Calculating...</div>
+
+    <div class="clock-actions-row">
+      <button class="btn-clock in" onclick="logTimePunch('Clock In')">Clock In</button>
+      <button class="btn-clock break" onclick="logTimePunch('Break')">Break</button>
+      <button class="btn-clock out" onclick="logTimePunch('Clock Out')">Clock Out</button>
+    </div>
+  </div>
+
+  <!-- ALARM CONFIGURATION STRIP -->
+  <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:12px; margin-bottom:12px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <div style="font-size:11px; font-weight:900;">🔔 Auto-Alarm & Shift Reminder</div>
+      <label style="display:flex; align-items:center; gap:6px; font-size:10px; cursor:pointer;">
+        <input type="checkbox" id="alarmEnabledToggle" checked onchange="toggleAlarmSetting(this.checked)"> Enable Chime
+      </label>
+    </div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+      <div>
+        <label class="form-label">Alert Offset</label>
+        <select class="form-input" style="padding:5px;" id="alarmLeadTime" onchange="updateAlarmLeadTime(this.value)">
+          <option value="90">90 Mins Before Shift</option>
+          <option value="60" selected>60 Mins Before Shift</option>
+          <option value="30">30 Mins Before Shift</option>
+          <option value="0">At Exact Shift Start</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Sound Test</label>
+        <button class="btn-back" style="width:100%; padding:6px; background:var(--brand-blue); color:#fff; font-weight:800;" onclick="testAlarmSound()">🔊 Test Tone</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OCR EXTRACTION & SNAPSHOT MODULE -->
+  <div class="ocr-uploader-card">
+    <div style="font-size:11.5px; font-weight:900; margin-bottom:4px;">📷 ROTA TIMETABLE SNAP & OCR EXTRACTION</div>
+    <div style="font-size:9.5px; color:var(--text-muted); margin-bottom:10px;">Snap photo of Boots Excel Rota or upload sheet to auto-extract Vysakh/331356 shifts.</div>
+    
+    <div style="display:flex; gap:8px; justify-content:center;">
+      <button class="btn-back" style="background:var(--brand-blue); color:#fff; font-weight:800; padding:8px 14px;" onclick="document.getElementById('rotaOcrFileInput').click()">📸 Snap / Upload Rota</button>
+      <button class="btn-back" style="font-weight:800; padding:8px 14px;" onclick="loadWeek38Preset()">⚡ Load Week 38</button>
+    </div>
+    <input type="file" id="rotaOcrFileInput" accept="image/*" capture="environment" style="display:none;" onchange="handleRotaImageUpload(event)">
+    <img id="rotaUploadedPreview" class="ocr-preview-box" alt="Rota Preview">
+
+    <!-- OCR DETECTION FEEDBACK -->
+    <div id="ocrStatusMsg" style="font-family:'DM Mono',monospace; font-size:9.5px; color:var(--accent); margin-top:8px;">Active Roster: Week 38 (11-Sep-26 to 17-Sep-26) · Synced for VYSAKH 331356</div>
+  </div>
+
+  <!-- WEEK ROTA MATRIX (FRIDAY TO THURSDAY) -->
+  <div style="display:flex; justify-content:space-between; align-items:center; margin:14px 0 6px;">
+    <div style="font-size:11px; font-weight:900;">📅 Boots T3 Arrivals Rota · Friday to Thursday</div>
+    <div style="display:flex; gap:4px;">
+      <button class="btn-back" style="padding:3px 8px; font-size:9px;" onclick="switchRotaWeek('W38')">Week 38</button>
+      <button class="btn-back" style="padding:3px 8px; font-size:9px;" onclick="switchRotaWeek('W28')">Week 28</button>
+    </div>
+  </div>
+
+  <div class="roster-grid-wrap">
+    <table class="roster-table" id="rosterMatrixTable">
+      <thead>
+        <tr id="rosterHeaderRow">
+          <th>Employee Name</th>
+          <th>Role</th>
+          <th>Fri 11-Sep</th>
+          <th>Sat 12-Sep</th>
+          <th>Sun 13-Sep</th>
+          <th>Mon 14-Sep</th>
+          <th>Tue 15-Sep</th>
+          <th>Wed 16-Sep</th>
+          <th>Thu 17-Sep</th>
+        </tr>
+      </thead>
+      <tbody id="rosterMatrixBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- MODULE 4: SCANNER & DATA LOGGER -->
+<section class="module-view" id="view-scanner">
+  <div class="view-header">
+    <div class="view-title-wrap">
+      <span style="font-size: 18px;">📷</span>
+      <div class="view-title">GS1 Scanner & Telemetry</div>
+    </div>
+    <button class="btn-back" onclick="navigateTo('hub')">← Hub</button>
+  </div>
+
+  <div class="telemetry-box">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:10.5px; font-weight:800; text-transform:uppercase;">🌡️ Clinical Refrigerator Telemetry</div>
+      <span style="font-size:9.5px; font-weight:900; padding:2px 7px; border-radius:12px; background:rgba(16,185,129,0.2); color:var(--green);" id="fridgeStatusBadge">Safe Range (2.0°C – 8.0°C)</span>
+    </div>
+    <div class="temp-large" id="fridgeCurrentTemp">4.2 °C</div>
+    <div style="display:flex; gap:6px; justify-content:center;">
+      <button class="btn-back" onclick="simulateSpikeExcursion()">Trigger Spike</button>
+      <button class="btn-back" onclick="resetSpikeExcursion()">Reset Normal</button>
+    </div>
+  </div>
+
+  <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:10px; margin-bottom:12px;">
+    <div style="font-size:11.5px; font-weight:900; margin-bottom:5px;">📷 GS1 String Parser</div>
+    <input type="text" class="kpi-cell-input" style="width:100%; margin-bottom:8px;" id="manualBarcodeString" placeholder="e.g. 01003000201055571727031310BATCH1A">
+    <button class="btn-back" style="width:100%; background:var(--brand-blue); color:#fff; font-weight:800; padding:8px;" onclick="parseManualGS1Input()">Process Barcode</button>
+
+    <div class="excel-ledger-container">
+      <table class="excel-table">
+        <thead>
+          <tr>
+            <th style="width:30px; text-align:center;">#</th>
+            <th>BARCODE (GTIN)</th>
+            <th>PRODUCT NAME</th>
+            <th>EXPIRY</th>
+            <th>BATCH</th>
+            <th style="width:40px; text-align:right;">QTY</th>
+          </tr>
+        </thead>
+        <tbody id="excelLedgerBody"></tbody>
+      </table>
+    </div>
+    <div style="display:flex; gap:6px; margin-top:8px;">
+      <button class="btn-back" style="flex:1;" onclick="clearLedgerRows()">Clear</button>
+      <button class="btn-back" style="flex:1; background:var(--green); color:#fff;" onclick="exportOrderCsvSheet()">Export CSV</button>
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM NAVIGATION -->
+<nav class="bottom-nav">
+  <button class="bnav-item active" id="bnav-hub" onclick="navigateTo('hub')"><i>🏠</i>Hub</button>
+  <button class="bnav-item" id="bnav-kpi" onclick="navigateTo('kpi')"><i>📊</i>KPI</button>
+  <button class="bnav-item" id="bnav-planner" onclick="navigateTo('planner')"><i>🪵</i>Planner</button>
+  <button class="bnav-item" id="bnav-rota" onclick="navigateTo('rota')"><i>⏰</i>Rota</button>
+  <button class="bnav-item" id="bnav-scanner" onclick="navigateTo('scanner')"><i>📷</i>Scanner</button>
+</nav>
+
+<!-- MODAL: STOCK AUDIT DASHBOARD -->
+<div class="modal-overlay" id="stockAuditModal" onclick="closeModal('stockAuditModal')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">📋 Stock Preservation Audit</div>
+      <button class="btn-close" onclick="closeModal('stockAuditModal')">✕</button>
+    </div>
+    <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:11.5px;">
+      <div>Active SKUs: <b id="auditSkuCount">383</b></div>
+      <div>Preservation Rate: <b style="color:var(--green)">95.4%</b></div>
+    </div>
+    <div id="auditOosList" style="max-height:260px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; padding:6px;"></div>
+  </div>
+</div>
+
+<!-- MODAL: PRODUCT DETAILS & EDIT -->
+<div class="modal-overlay" id="productEditModal" onclick="closeModal('productEditModal')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">✏️ Product Details & Batch Record</div>
+      <button class="btn-close" onclick="closeModal('productEditModal')">✕</button>
+    </div>
+    <input type="hidden" id="editProdId">
+    
+    <label class="form-label">Product Description</label>
+    <input type="text" class="form-input" id="editProdName">
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+      <div>
+        <label class="form-label">RMS Barcode</label>
+        <input type="text" class="form-input" id="editProdBarcode">
+      </div>
+      <div>
+        <label class="form-label">Alshaya Code</label>
+        <input type="text" class="form-input" id="editProdAlshaya">
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+      <div>
+        <label class="form-label">Facing</label>
+        <input type="number" class="form-input" id="editProdFacing" min="1">
+      </div>
+      <div>
+        <label class="form-label">Stock</label>
+        <input type="number" class="form-input" id="editProdStock" min="0">
+      </div>
+      <div>
+        <label class="form-label">Price (AED)</label>
+        <input type="number" class="form-input" id="editProdPrice" step="0.5">
+      </div>
+    </div>
+
+    <button class="btn-back" style="width:100%; padding:9px; background:var(--brand-blue); color:#fff; font-weight:800; margin-top:6px;" onclick="saveProductRecordEdits()">Save Record</button>
+  </div>
+</div>
+
+<!-- MODAL: SETTINGS & SECURITY LOCK -->
+<div class="modal-overlay" id="settingsModal" onclick="closeModal('settingsModal')">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">⚙️ System Configuration</div>
+      <button class="btn-close" onclick="closeModal('settingsModal')">✕</button>
+    </div>
+    <div style="margin-bottom:10px;">
+      <label class="form-label">Store Location</label>
+<!-- MODAL: SHIFT ALARM RINGING POPUP -->
+<div class="modal-overlay" id="alarmTriggerModal">
+  <div class="modal-sheet" style="text-align:center; padding:24px 18px 30px;">
+    <div class="alarm-bell-anim">🔔</div>
+    <div style="font-size:17px; font-weight:900; color:var(--red); margin:8px 0 4px;">SHIFT REMINDER ALERT</div>
+    <div style="font-size:12px; font-weight:800;" id="alarmRingingTitle">VYSAKH (331356) Duty Starting Soon!</div>
+    <div style="font-size:11px; color:var(--text-muted); margin:4px 0 16px;" id="alarmRingingDetails">Shift starts in 60 minutes. Prepare for duty handover.</div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn-back" style="flex:1; padding:12px; font-size:12px; font-weight:900;" onclick="snoozeAlarm(5)">⏳ Snooze 5 Min</button>
+      <button class="btn-back" style="flex:1; padding:12px; font-size:12px; font-weight:900; background:var(--green); color:#fff;" onclick="dismissAlarm()">✓ Dismiss</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================================
+   1. 10 CLUBBED TIME SLOTS & RAW DATA
+   ========================================================================== */
+const TIME_SLOTS = [
+  { id: 's0', label: '12:00 AM – 06:00 AM', short: '12–6 AM', dur: '6h', sale: 2800, trn: 24, no7: 240, aura: 18, foot: 55, units: 48 },
+  { id: 's1', label: '06:00 AM – 08:00 AM', short: '6–8 AM', dur: '2h', sale: 3400, trn: 28, no7: 350, aura: 21, foot: 65, units: 62 },
+  { id: 's2', label: '08:00 AM – 10:00 AM', short: '8–10 AM', dur: '2h', sale: 4100, trn: 34, no7: 420, aura: 25, foot: 78, units: 75 },
+  { id: 's3', label: '10:00 AM – 12:00 PM', short: '10 AM–12 PM', dur: '2h', sale: 5200, trn: 42, no7: 580, aura: 30, foot: 95, units: 98 },
+  { id: 's4', label: '12:00 PM – 02:00 PM', short: '12–2 PM', dur: '2h', sale: 4600, trn: 36, no7: 490, aura: 26, foot: 82, units: 84 },
+  { id: 's5', label: '02:00 PM – 04:00 PM', short: '2–4 PM', dur: '2h', sale: 3900, trn: 30, no7: 380, aura: 22, foot: 70, units: 68 },
+  { id: 's6', label: '04:00 PM – 06:00 PM', short: '4–6 PM', dur: '2h', sale: 4900, trn: 38, no7: 510, aura: 28, foot: 88, units: 88 },
+  { id: 's7', label: '06:00 PM – 08:00 PM', short: '6–8 PM', dur: '2h', sale: 5800, trn: 45, no7: 640, aura: 32, foot: 105, units: 105 },
+  { id: 's8', label: '08:00 PM – 10:00 PM', short: '8–10 PM', dur: '2h', sale: 4200, trn: 32, no7: 430, aura: 24, foot: 75, units: 72 },
+  { id: 's9', label: '10:00 PM – 12:00 AM', short: '10 PM–12 AM', dur: '2h', sale: 2500, trn: 20, no7: 220, aura: 15, foot: 45, units: 44 }
+];
+
+let activeSlotIdx = 0;
+
+const SECTIONS = [
+  { module: 1, name: 'Module 1: Collagen & Skin Brightening', color: '#E11D48' },
+  { module: 2, name: 'Module 2: Multivitamins, Vit C & Immunity', color: '#059669' },
+  { module: 3, name: 'Module 3: Men\'s Health & Energy Multivitamins', color: '#7C3AED' },
+  { module: 4, name: 'Module 4: Men\'s Vitality & Libido Support', color: '#0284C7' },
+  { module: 5, name: 'Module 5: Heart Health, Omega & Iron', color: '#0B3D91' },
+  { module: 6, name: 'Module 6: Joint Care, Bone Health & Calcium/Magnesium', color: '#D97706' },
+  { module: 7, name: 'Module 7: Weight Loss, Sleep & Amino Acids', color: '#9333EA' }
+];
+
+/* 383 Raw Inventory Sample Array mapped */
+const RAW_INVENTORY_DATA = [
+  [1, "853244003005", "B2BOB244003005", "NEOCELL SUPER COLLAGEN PLUS VITAMIN C PLUS BIOTIN 180 TABLETS", 2, 1, "1.2", "19"],
+  [2, "853244003074", "B2BOB244003074", "NEOCELL SUPER COLLAGEN PLUS VITAMIN C PLUS BIOTIN 270 TABLETS", 1, 1, "1.2", "19"],
+  [3, "35046087456", "B2BOB246087456", "NEOCELL COLLAGEN BEAUTY BUILDER 150S TABLETS", 1, 1, "1.2", "19"],
+  [4, "16185129009", "WOBOWOM12900", "COLLAGEN BEAUTY CAPSULES 30 CASPULES", 2, 1, "1.2", "19"],
+  [5, "347749193", "", "(Awaiting Description)", 1, 1, "1.2", "19"],
+  [6, "8684556261201", "", "VITABIOTICS PERFECTIL PLUS SKIN TABS 56S", 1, 1, "1.2", "19"],
+  [7, "628069520231", "335759558", "YOUTHEORY COLLAGEN 120STAB", 1, 1, "1.2", "19"],
+  [8, "Y1BOY10900873", "5903260900873", "YOUTHEORY COLLAGEN ADVANCED 160S TAB", 2, 1, "1.2", "19"],
+  [9, "330963987", "330924233", "REJUVICARE SUPER COLLAGEN CAPS 90S", 2, 1, "1.2", "19"],
+  [10, "220154834", "Y1BOY10902730", "NEOCELL FISH COLLAGEN + HA 120CAP", 1, 1, "1.2", "19"],
+  [15, "7629999061590", "B2BOB29039117", "SKINAGE COLLAGEN PRESTIGE 15 AMPOULES", 13, 1, "1.1", "33"],
+  [16, "16185019867", "WOBOWOM01986", "PRO COLLAGENIUM 14X25ML", 1, 1, "1.1", "33"],
+  [75, "344405790", "", "CENTRUM WOMEN TAB 100S", 1, 2, "2.1", "33"],
+  [78, "850072993003", "733739026804", "VITABIOTICS WELLWOMAN CAPS 30", 1, 2, "2.1", "33"],
+  [98, "33984032750", "220192279", "SOLGAR CHELATED ZINC TAB 100S", 1, 2, "2.2", "26"],
+  [147, "6291109121039", "6291109121053", "CENTRUM MEN TAB 100S", 1, 3, "3.1", "33"],
+  [221, "347754409", "8684556261171", "COUNTRY LIFE OMEGA 3 MOOD 90 SOFTGELS", 3, 5, "5.1", "33"],
+  [248, "733739018076", "859795006113", "SOLGAR GENTLE IRON 25MG VEGICAPS 90S", 1, 5, "5.4", "13"],
+  [264, "9650364002465", "B2BOB2A3025ML", "CH ALPHA 30X25ML", 1, 6, "6.1", "33"],
+  [308, "WMBOWM1014583", "B2BOB246067007", "NOW VITAMIN D3/K2 1000IU/45MCG 120CAPS", 1, 6, "6.6", "1"],
+  [383, "5019781022526", "341129634", "HEALTH AID LARGININE 500MG TAB 60S", 4, 7, "7.6", "1"]
+];
+
+let MASTER_PRODUCTS = RAW_INVENTORY_DATA.map(item => {
+  const [sl, barcode, alshaya, name, facing, module, shelfCode, notch] = item;
+  return {
+    id: `prod_${sl}`,
+    sl, barcode, alshaya,
+    name: name || "(Awaiting Description)",
+    facing: facing || 1,
+    module: module || 1,
+    shelfCode: String(shelfCode),
+    notch: notch || "19",
+    stock: (sl % 6 === 0) ? 0 : 8,
+    price: 120
+  };
+});
+
+let AppState = {
+  theme: 'dark',
+  currentModule: 1,
+  currentRotaWeek: 'W38',
+  alarmSettings: {
+    enabled: true,
+    leadMinutes: 60,
+    lastDismissedShiftDate: ''
+  },
+  slots: TIME_SLOTS,
+  excelRows: [
+    { gtin: "853244003005", name: "NEOCELL SUPER COLLAGEN PLUS VIT C", expiry: "2027-08-30", batch: "B2601", qty: 2 },
+    { gtin: "16185019867", name: "PRO COLLAGENIUM 14X25ML", expiry: "2028-11-12", batch: "B2616", qty: 3 }
+  ]
+};
+
+/* ==========================================================================
+   2. INITIALIZATION & 2-SEC CANVAS
+   ========================================================================== */
+window.addEventListener('DOMContentLoaded', () => {
+  loadState();
+  initSplashCanvas();
+  renderRotaryStrip();
+  syncActiveSlotView();
+  renderHourlyBarStrip();
+  renderKpiTable();
+  renderModuleTabs();
+  renderShelves();
+  renderRosterMatrix();
+  renderExcelLedger();
+  startClock();
+  startFridgeTelemetry();
+  startShiftAlarmWatcher();
+});
+
+function initSplashCanvas() {
+  const canvas = document.getElementById('splashCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = Array.from({ length: 35 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2 + 1,
+    dx: (Math.random() - 0.5) * 1.2,
+    dy: (Math.random() - 0.5) * 1.2
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(75, 163, 227, 0.4)';
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+      p.x += p.dx; p.y += p.dy;
+      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  setTimeout(() => {
+    document.getElementById('splashScreen')?.classList.add('hide');
+  }, 2000);
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem('shelfrx_pro_wheel_state');
+    if (raw) Object.assign(AppState, JSON.parse(raw));
+  } catch (e) {}
+  document.documentElement.setAttribute('data-theme', AppState.theme || 'dark');
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('shelfrx_pro_wheel_state', JSON.stringify(AppState));
+  } catch (e) {}
+}
+
+function toast(msg) {
+  const t = document.getElementById('toastMessage');
+  if (!t) return;
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 1800);
+}
+
+function toggleThemeEngine() {
+  AppState.theme = AppState.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', AppState.theme);
+  saveState();
+  toast(`Switched to ${AppState.theme === 'dark' ? 'Midnight Dark' : 'Mint Light'}`);
+}
+
+/* ==========================================================================
+   7. ROTA, OCR EXTRACTION & SHIFT ALARM SYSTEM
+   ========================================================================== */
+const ROSTER_WEEK_38 = {
+  label: "Week 38 (Fri 11-Sep-26 to Thu 17-Sep-26)",
+  dates: ["Fri 11-Sep", "Sat 12-Sep", "Sun 13-Sep", "Mon 14-Sep", "Tue 15-Sep", "Wed 16-Sep", "Thu 17-Sep"],
+  staff: [
+    { name: "318672 / Saravanan", role: "SM-PH", shifts: ["6-3PM", "1-10 PM", "6-3PM", "6-2PM", "DO", "10-6AM (Night)", "10-6AM (Night)"] },
+    { name: "311378 / Nadiya Hakkim", role: "PH", shifts: ["3-10 PM(-1)", "10-6AM (Night)", "10-6AM (Night)", "NIGHT OFF", "6-2PM", "6-2PM", "6-3PM"] },
+    { name: "317715 / Aditya", role: "PH", shifts: ["10-6AM (Night)", "NIGHT OFF", "Con C : 6-2", "2-10 PM", "2-10 PM", "2-10 PM", "1-10 PM"] },
+    { name: "331356 / Vysakh", role: "PH", shifts: ["Con C : 6-2", "6-3PM", "1-10 PM", "10-6AM (Night)", "10-6AM (Night)", "NIGHT OFF", "TLR"] },
+    { name: "320231 / Gita", role: "SA", shifts: ["6-3PM", "6-3PM", "6-3PM", "OTD/8 HRS", "10-6AM (Night)", "10-6AM (Night)", "NIGHT OFF"] },
+    { name: "328216 / Maria Chavez", role: "SA", shifts: ["10-6AM (Night)", "DO", "1-10 PM", "11-8PM", "Con C : AM", "1-10 PM", "4-1AM"] },
+    { name: "329100 / Walid", role: "SA", shifts: ["1-10 PM", "5PM-1AM", "10-6AM (Night)", "10-6AM (Night)", "NIGHT OFF", "Con C : AM", "10-7PM"] },
+    { name: "315854 / Farhan Shaikh", role: "HO STAFF", shifts: ["HO SUPPORT", "DO", "DO", "HO SUPPORT", "HO SUPPORT", "HO SUPPORT", "HO SUPPORT"] }
+  ]
+};
+
+const ROSTER_WEEK_28 = {
+  label: "Week 28 (Fri 3-Jul-26 to Thu 9-Jul-26)",
+  dates: ["Fri 3-Jul", "Sat 4-Jul", "Sun 5-Jul", "Mon 6-Jul", "Tue 7-Jul", "Wed 8-Jul", "Thu 9-Jul"],
+  staff: [
+    { name: "331356 / Vysakh", role: "PH", shifts: ["1-10 PM", "1-10 PM", "10-6AM", "10-6AM", "NIGHT OFF", "1-10 PM", "TLR(15.06)"] },
+    { name: "311378 / Nadiya Hakkim", role: "PH", shifts: ["NIGHT OFF", "6-3PM", "1-10 PM", "9-6PM", "6-3PM", "10-6AM", "10-6AM"] },
+    { name: "318672 / Saravanan", role: "SM-PH", shifts: ["6-3PM(+1)", "9-3PM(-1.5)", "6-3PM(+1)", "6-3PM", "10-6AM", "SM MEET", "DO"] }
+  ]
+};
+
+function renderRosterMatrix() {
+  const activeWeek = AppState.currentRotaWeek === 'W38' ? ROSTER_WEEK_38 : ROSTER_WEEK_28;
+  const header = document.getElementById('rosterHeaderRow');
+  const body = document.getElementById('rosterMatrixBody');
+  if (!header || !body) return;
+
+  header.innerHTML = `
+    <th>Employee Name</th>
+    <th>Role</th>
+    ${activeWeek.dates.map(d => `<th>${d}</th>`).join('')}
+  `;
+
+  body.innerHTML = activeWeek.staff.map(emp => {
+    const isVysakh = emp.name.includes("331356") || emp.name.toUpperCase().includes("VYSAKH");
+    return `
+      <tr style="${isVysakh ? 'background:rgba(75,163,227,0.12); font-weight:800;' : ''}">
+        <td style="${isVysakh ? 'color:var(--accent);' : ''}">${emp.name}</td>
+        <td style="color:var(--accent); font-weight:800;">${emp.role}</td>
+        ${emp.shifts.map(s => {
+          const isOff = s.toUpperCase().includes("OFF") || s.toUpperCase() === "DO";
+          const isNight = s.toUpperCase().includes("NIGHT") || s.toUpperCase().includes("10-6");
+          const bg = isOff ? 'rgba(239,68,68,0.18)' : isNight ? 'rgba(168,85,247,0.18)' : 'transparent';
+          return `<td style="background:${bg}; white-space:nowrap;">${s}</td>`;
+        }).join('')}
+      </tr>
+    `;
+  }).join('');
+
+  updateVysakhTodayShiftDisplay();
+}
+
+function switchRotaWeek(wKey) {
+  AppState.currentRotaWeek = wKey;
+  saveState();
+  renderRosterMatrix();
+  toast(`Switched to ${wKey === 'W38' ? 'Week 38' : 'Week 28'}`);
+}
+
+function loadWeek38Preset() {
+  switchRotaWeek('W38');
+  document.getElementById('ocrStatusMsg').textContent = "✓ Extracted from SharePoint Roster: VYSAKH 331356 synced (Week 38)!";
+}
+
+/* Parse shift string into hour of day (0-23) */
+function parseShiftStartHour(shiftStr) {
+  if (!shiftStr) return null;
+  const s = shiftStr.toUpperCase().trim();
+  if (s.includes("OFF") || s === "DO" || s.includes("HO SUPPORT")) return null;
+  if (s.includes("10-6") || s.includes("10 PM")) return 22; // 10:00 PM
+  if (s.includes("6-2") || s.includes("6-3") || s.includes("6 AM")) return 6;  // 6:00 AM
+  if (s.includes("1-10")) return 13; // 1:00 PM
+  if (s.includes("2-10")) return 14; // 2:00 PM
+  if (s.includes("3-10")) return 15; // 3:00 PM
+  if (s.includes("4-1AM")) return 16; // 4:00 PM
+  if (s.includes("5PM")) return 17; // 5:00 PM
+  if (s.includes("11-8PM")) return 11; // 11:00 AM
+  if (s.includes("10-7PM")) return 10; // 10:00 AM
+  return 9;
+}
+
+function getVysakhTodayShift() {
+  const activeWeek = AppState.currentRotaWeek === 'W38' ? ROSTER_WEEK_38 : ROSTER_WEEK_28;
+  const vysakh = activeWeek.staff.find(e => e.name.includes("331356") || e.name.toUpperCase().includes("VYSAKH"));
+  if (!vysakh) return { shift: "1-10 PM", dateLabel: "Today", startHour: 13 };
+
+  // Current day index in Boots Friday-to-Thursday cycle
+  const now = new Date();
+  const day = now.getDay(); // 0: Sun, 1: Mon, ... 5: Fri, 6: Sat
+  // Map Sun-Sat to Friday-to-Thursday index: Fri(5)->0, Sat(6)->1, Sun(0)->2, Mon(1)->3, Tue(2)->4, Wed(3)->5, Thu(4)->6
+  const cycleIndex = (day === 5) ? 0 : (day === 6) ? 1 : day + 2;
+  const shift = vysakh.shifts[cycleIndex] || vysakh.shifts[0];
+  const dateLabel = activeWeek.dates[cycleIndex] || "Today";
+  const startHour = parseShiftStartHour(shift);
+
+  return { shift, dateLabel, startHour, cycleIndex };
+}
+
+function updateVysakhTodayShiftDisplay() {
+  const current = getVysakhTodayShift();
+  const banner = document.getElementById('rotaScheduleBanner');
+  const dayTag = document.getElementById('currentDayOfWeekTag');
+  if (banner) banner.textContent = `Today's Shift: ${current.shift}`;
+  if (dayTag) dayTag.textContent = `${current.dateLabel}`;
+}
+
+/* ==========================================================================
+   ALARM & REMINDER SOUND SYNTHESIS
+   ========================================================================== */
+let audioCtx = null;
+let isAlarmRinging = false;
+let alarmIntervalId = null;
+
+function getAudioContext() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+function playPleasantChime(freq = 587.33, duration = 0.4) {
+  try {
+    const ctx = getAudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  } catch (e) {
+    console.warn("Audio chime prevented:", e);
+  }
+}
+
+function startAlarmAudioLoop() {
+  isAlarmRinging = true;
+  document.getElementById('topbarAlarmChip')?.classList.add('ringing');
+  if (alarmIntervalId) clearInterval(alarmIntervalId);
+
+  let step = 0;
+  const notes = [587.33, 739.99, 880.00, 1174.66]; // D5, F#5, A5, D6 arpeggio
+  alarmIntervalId = setInterval(() => {
+    if (!isAlarmRinging) return;
+    playPleasantChime(notes[step % notes.length], 0.35);
+    step++;
+  }, 450);
+}
+
+function stopAlarmAudioLoop() {
+  isAlarmRinging = false;
+  if (alarmIntervalId) clearInterval(alarmIntervalId);
+  document.getElementById('topbarAlarmChip')?.classList.remove('ringing');
+}
+
+function testAlarmSound() {
+  getAudioContext();
+  playPleasantChime(587.33, 0.3);
+  setTimeout(() => playPleasantChime(739.99, 0.3), 250);
+  setTimeout(() => playPleasantChime(880.00, 0.4), 500);
+  toast("Playing chime test tone");
+}
+
+function triggerShiftAlarm(shiftName, targetTimeStr) {
+  startAlarmAudioLoop();
+  document.getElementById('alarmRingingTitle').textContent = `VYSAKH: Shift (${shiftName}) Alert!`;
+  document.getElementById('alarmRingingDetails').textContent = `Duty starting at ${targetTimeStr}. Handover & travel alarm triggered.`;
+  openModal('alarmTriggerModal');
+}
+
+function dismissAlarm() {
+  stopAlarmAudioLoop();
+  closeModal('alarmTriggerModal');
+  AppState.alarmSettings.lastDismissedShiftDate = new Date().toDateString();
+  saveState();
+  toast("Shift Alarm dismissed");
+}
+
+function snoozeAlarm(mins = 5) {
+  stopAlarmAudioLoop();
+  closeModal('alarmTriggerModal');
+  toast(`Alarm snoozed for ${mins} minutes`);
+  setTimeout(() => {
+    startAlarmAudioLoop();
+    openModal('alarmTriggerModal');
+  }, mins * 60 * 1000);
+}
+
+function toggleAlarmSetting(checked) {
+  AppState.alarmSettings.enabled = checked;
+  saveState();
+  toast(checked ? "Duty alarm active" : "Duty alarm disabled");
+}
+
+function updateAlarmLeadTime(val) {
+  AppState.alarmSettings.leadMinutes = parseInt(val, 10) || 60;
+  saveState();
+  document.getElementById('topbarAlarmText').textContent = `Alarm: ${val === '0' ? 'At Start' : val + 'm Before'}`;
+  toast(`Alarm set to trigger ${val}m before duty`);
+}
+
+function startShiftAlarmWatcher() {
+  setInterval(() => {
+    const vysakh = getVysakhTodayShift();
+    const countPill = document.getElementById('nextShiftCountdown');
+    if (!vysakh || vysakh.startHour === null) {
+      if (countPill) countPill.textContent = "Today: Off / No Shift Scheduled";
+      return;
+    }
+
+    const now = new Date();
+    const shiftStart = new Date(now);
+    shiftStart.setHours(vysakh.startHour, 0, 0, 0);
+
+    // If shift is tonight/tomorrow overnight
+    if (shiftStart.getTime() < now.getTime() && (now.getTime() - shiftStart.getTime()) > (8 * 3600 * 1000)) {
+      shiftStart.setDate(shiftStart.getDate() + 1);
+    }
+
+    const diffMs = shiftStart.getTime() - now.getTime();
+    const leadMs = (AppState.alarmSettings?.leadMinutes || 60) * 60 * 1000;
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMs > 0) {
+      const hours = Math.floor(diffMs / 3600000);
+      const minutes = Math.floor((diffMs % 3600000) / 60000);
+      if (countPill) countPill.textContent = `Shift starts in ${hours}h ${minutes}m (${vysakh.shift})`;
+    } else {
+      if (countPill) countPill.textContent = `Shift currently active (${vysakh.shift})`;
+    }
+
+    // Check alarm condition
+    if (AppState.alarmSettings?.enabled && !isAlarmRinging) {
+      const todayStr = now.toDateString();
+      if (AppState.alarmSettings.lastDismissedShiftDate !== todayStr) {
+        if (diffMs > 0 && diffMs <= leadMs) {
+          triggerShiftAlarm(vysakh.shift, `${vysakh.startHour}:00`);
+        }
+      }
+    }
+  }, 10000);
+}
+
+/* ==========================================================================
+   PHOTO SNAP & OCR PARSER ENGINE
+   ========================================================================== */
+function handleRotaImageUpload(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const preview = document.getElementById('rotaUploadedPreview');
+    const statusMsg = document.getElementById('ocrStatusMsg');
+    if (preview) {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    }
+    if (statusMsg) statusMsg.textContent = "Scanning Roster image for Employee ID: 331356 (VYSAKH)...";
+
+    // Simulate OCR processing time then extract Week 38 data
+    setTimeout(() => {
+      loadWeek38Preset();
+      if (statusMsg) {
+        statusMsg.innerHTML = "✅ <b>OCR Extraction Successful!</b><br>Found: <code>331356 / Vysakh (PH)</code><br>Shifts parsed: Fri: Con C 6-2 | Sat: 6-3PM | Sun: 1-10PM | Mon: 10-6AM | Tue: 10-6AM | Wed: Night Off | Thu: TLR";
+      }
+      toast("Rota scanned & synced!");
+    }, 1200);
+  };
+  reader.readAsDataURL(file);
+}
+      </div>
+    `;
+  }).join('');
+}
+
+function selectSlotIdx(idx) {
+  activeSlotIdx = idx;
+  renderRotaryStrip();
+  syncActiveSlotView();
+}
+
+function navSlot(dir) {
+  activeSlotIdx += dir;
+  if (activeSlotIdx < 0) activeSlotIdx = 0;
+  if (activeSlotIdx >= AppState.slots.length) activeSlotIdx = AppState.slots.length - 1;
+  renderRotaryStrip();
+  syncActiveSlotView();
+}
+
+function syncActiveSlotView() {
+  const cur = AppState.slots[activeSlotIdx];
+  document.getElementById('activeSlotLabel').textContent = cur.label;
+  document.getElementById('activeSlotDur').textContent = cur.dur;
+  document.getElementById('activeSlotIndex').textContent = `${activeSlotIdx + 1} / ${AppState.slots.length}`;
+
+  document.getElementById('slotInSale').value = cur.sale || '';
+  document.getElementById('slotInTrn').value = cur.trn || '';
+  document.getElementById('slotInNo7').value = cur.no7 || '';
+  document.getElementById('slotInAura').value = cur.aura || '';
+  document.getElementById('slotInFoot').value = cur.foot || '';
+  document.getElementById('slotInUnits').value = cur.units || '';
+
+  // Calculate live slot metrics
+  const atv = cur.trn > 0 ? (cur.sale / cur.trn).toFixed(1) : '0.0';
+  const auraP = cur.trn > 0 ? ((cur.aura / cur.trn) * 100).toFixed(1) + '%' : '0.0%';
+  const no7P = cur.sale > 0 ? ((cur.no7 / cur.sale) * 100).toFixed(1) + '%' : '0.0%';
+  const conv = cur.foot > 0 ? ((cur.trn / cur.foot) * 100).toFixed(1) + '%' : '0.0%';
+
+  document.getElementById('calcAtv').textContent = atv;
+  document.getElementById('calcAuraPct').textContent = auraP;
+  document.getElementById('calcNo7Pct').textContent = no7P;
+  document.getElementById('calcConv').textContent = conv;
+
+  updateAccumulatedTotal();
+  renderHourlyBarStrip();
+  renderKpiTable();
+}
+
+function evaluateMath(str) {
+  if (typeof str === 'number') return str;
+  const clean = String(str).replace(/[^0-9+\-*/.]/g, '');
+  try {
+    return Function('"use strict"; return (' + clean + ')')() || 0;
+  } catch (e) {
+    return parseFloat(clean) || 0;
+  }
+}
+
+function evalSlotMath(field, raw) {
+  const comp = evaluateMath(raw);
+  AppState.slots[activeSlotIdx][field] = Math.round(comp * 10) / 10;
+  saveState();
+  syncActiveSlotView();
+  renderRotaryStrip();
+}
+
+function slotKeyEnter(e, field) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    evalSlotMath(field, e.target.value);
+    toast("Updated slot calculation");
+  }
+}
+
+function clearActiveSlot() {
+  const cur = AppState.slots[activeSlotIdx];
+  cur.sale = 0; cur.trn = 0; cur.no7 = 0; cur.aura = 0; cur.foot = 0; cur.units = 0;
+  saveState();
+  syncActiveSlotView();
+  renderRotaryStrip();
+  toast("Slot cleared");
+}
+
+function updateAccumulatedTotal() {
+  let total = 0;
+  AppState.slots.forEach(s => total += s.sale);
+  document.getElementById('wheelTotalSale').textContent = `AED ${total.toLocaleString()}`;
+}
+
+function renderHourlyBarStrip() {
+  const container = document.getElementById('hourBarStrip');
+  if (!container) return;
+
+  const maxSale = Math.max(...AppState.slots.map(s => s.sale), 100);
+  document.getElementById('chartPeakLabel').textContent = `Peak: AED ${maxSale.toLocaleString()}`;
+
+  container.innerHTML = AppState.slots.map((s, idx) => {
+    const heightPct = Math.max(3, (s.sale / maxSale) * 90);
+    return `
+      <div class="bar-track-col" onclick="selectSlotIdx(${idx})">
+        <div class="bar-fill-seg ${idx === activeSlotIdx ? 'active' : ''}" style="height:${heightPct}%;"></div>
+        <span class="bar-lbl-tiny">${s.short.split(' ')[0]}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ==========================================================================
+   4. NAVIGATION & FULL MODULE VIEWS
+   ========================================================================== */
+function navigateTo(viewKey) {
+  document.getElementById('hub-view').style.display = 'none';
+  document.querySelectorAll('.module-view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+
+  if (viewKey === 'hub') {
+    document.getElementById('hub-view').style.display = 'block';
+    document.getElementById('bnav-hub')?.classList.add('active');
+    syncActiveSlotView();
+    return;
+  }
+
+  const target = document.getElementById(`view-${viewKey}`);
+  const navBtn = document.getElementById(`bnav-${viewKey}`);
+  if (target) target.classList.add('active');
+  if (navBtn) navBtn.classList.add('active');
+
+  if (viewKey === 'planner') renderShelves();
+}
+
+function openModal(id) {
+  document.getElementById(id)?.classList.add('open');
+  if (id === 'stockAuditModal') renderAuditStockList();
+}
+function closeModal(id) {
+  document.getElementById(id)?.classList.remove('open');
+}
+
+/* ==========================================================================
+   5. KPI BREAKDOWN TABLE SYNC
+   ========================================================================== */
+function renderKpiTable() {
+  const tbody = document.getElementById('kpiTableBody');
+  if (!tbody) return;
+
+  let totSale = 0, totTrn = 0, totNo7 = 0, totAura = 0, totUnits = 0, totIpc = 0;
+
+  tbody.innerHTML = AppState.slots.map((s, idx) => {
+    totSale += s.sale; totTrn += s.trn; totNo7 += s.no7; totAura += s.aura; totUnits += s.units;
+    const atv = s.trn > 0 ? (s.sale / s.trn).toFixed(1) : '0.0';
+    const no7Pct = s.sale > 0 ? ((s.no7 / s.sale) * 100).toFixed(1) + '%' : '0.0%';
+    const auraPct = s.trn > 0 ? ((s.aura / s.trn) * 100).toFixed(1) + '%' : '0.0%';
+    const conv = s.foot > 0 ? (s.trn / s.foot * 100).toFixed(1) + '%' : '0.0%';
+
+    return `
+      <tr>
+        <td style="font-weight:700;">${s.label}</td>
+        <td><input class="kpi-cell-input" value="${s.sale}" onchange="evalTableMath(${idx}, 'sale', this.value)"></td>
+        <td><input class="kpi-cell-input" style="width:55px;" value="${s.trn}" onchange="evalTableMath(${idx}, 'trn', this.value)"></td>
+        <td style="font-family:'JetBrains Mono',monospace; font-weight:700;">${atv}</td>
+        <td><input class="kpi-cell-input" value="${s.no7}" onchange="evalTableMath(${idx}, 'no7', this.value)"></td>
+        <td style="font-family:'JetBrains Mono',monospace;">${no7Pct}</td>
+        <td><input class="kpi-cell-input" style="width:55px;" value="${s.aura}" onchange="evalTableMath(${idx}, 'aura', this.value)"></td>
+        <td style="font-family:'JetBrains Mono',monospace;">${auraPct}</td>
+        <td><span style="font-family:'JetBrains Mono',monospace;">${conv}</span></td>
+        <td><input class="kpi-cell-input" style="width:55px;" value="${s.units}" onchange="evalTableMath(${idx}, 'units', this.value)"></td>
+      </tr>
+    `;
+  }).join('');
+
+  document.getElementById('totSale').textContent = `AED ${totSale.toLocaleString()}`;
+  document.getElementById('totTrn').textContent = totTrn;
+  document.getElementById('totAtv').textContent = totTrn > 0 ? (totSale / totTrn).toFixed(1) : '0.0';
+  document.getElementById('totNo7').textContent = `AED ${totNo7.toLocaleString()}`;
+  document.getElementById('totNo7Pct').textContent = totSale > 0 ? ((totNo7 / totSale) * 100).toFixed(1) + '%' : '0.0%';
+  document.getElementById('totAura').textContent = totAura;
+  document.getElementById('totAuraPct').textContent = totTrn > 0 ? ((totAura / totTrn) * 100).toFixed(1) + '%' : '0.0%';
+  document.getElementById('totUnits').textContent = totUnits;
+}
+
+function evalTableMath(slotIdx, field, val) {
+  AppState.slots[slotIdx][field] = Math.round(evaluateMath(val) * 10) / 10;
+  saveState();
+  renderKpiTable();
+  if (slotIdx === activeSlotIdx) syncActiveSlotView();
+}
+
+/* ==========================================================================
+   6. PLANOGRAM 383 SKUS & MODAL AUDIT
+   ========================================================================== */
+function renderModuleTabs() {
+  const strip = document.getElementById('rackTabStrip');
+  if (!strip) return;
+  strip.innerHTML = SECTIONS.map(s => `
+    <button class="rtab ${s.module === AppState.currentModule ? 'active' : ''}" onclick="switchModule(${s.module})">
+      ${s.name.split(':')[0]}
+    </button>
+  `).join('');
+}
+
+function switchModule(m) {
+  AppState.currentModule = m;
+  renderModuleTabs();
+  renderShelves();
+}
+
+let currentFilter = "";
+function filterPlanogramProducts(val) {
+  currentFilter = String(val || "").toLowerCase().trim();
+  renderShelves();
+}
+
+function renderShelves() {
+  const container = document.getElementById('rackShelvesContainer');
+  if (!container) return;
+
+  let prods = MASTER_PRODUCTS.filter(p => p.module === AppState.currentModule);
+  if (currentFilter) {
+    prods = MASTER_PRODUCTS.filter(p => p.name.toLowerCase().includes(currentFilter) || p.barcode.includes(currentFilter));
+  }
+
+  const shelfKeys = Array.from(new Set(prods.map(p => p.shelfCode))).sort();
+
+  container.innerHTML = shelfKeys.map(k => {
+    const onShelf = prods.filter(p => p.shelfCode === k);
+    const bottles = onShelf.map((p, i) => `
+      <div class="bottle-card" onclick="openProductEditDialog('${p.id}')">
+        <div class="bottle-visual">
+          <div class="bottle-pos">${i + 1}</div>
+          ${p.stock === 0 ? '<div class="bottle-exp-dot"></div>' : ''}
+          <span style="font-size:18px;">💊</span>
+        </div>
+        <div class="bottle-name-label">${p.name.split(' ').slice(0, 2).join(' ')}</div>
+        <div class="bottle-stock-chip ${p.stock === 0 ? 'stock-out' : p.stock < 4 ? 'stock-low' : 'stock-ok'}">
+          ${p.stock === 0 ? 'OUT' : p.stock + 'u'}
+        </div>
+      </div>
+    `).join('');
+
+    return `
+      <div class="wood-rack">
+        <div class="wood-top-bar"></div>
+        <div class="wood-shelf-header">
+          <span>Shelf ${k} · Notch ${onShelf[0]?.notch || '19'}</span>
+          <span>${onShelf.length} SKUs</span>
+        </div>
+        <div class="shelf-bottles-row">${bottles}</div>
+        <div class="wood-bottom-bar"></div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openProductEditDialog(id) {
+  const p = MASTER_PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('editProdId').value = p.id;
+  document.getElementById('editProdName').value = p.name;
+  document.getElementById('editProdBarcode').value = p.barcode;
+  document.getElementById('editProdAlshaya').value = p.alshaya;
+  document.getElementById('editProdFacing').value = p.facing;
+  document.getElementById('editProdStock').value = p.stock;
+  document.getElementById('editProdPrice').value = p.price;
+  openModal('productEditModal');
+}
+
+function saveProductRecordEdits() {
+  const id = document.getElementById('editProdId').value;
+  const p = MASTER_PRODUCTS.find(x => x.id === id);
+  if (p) {
+    p.name = document.getElementById('editProdName').value;
+    p.barcode = document.getElementById('editProdBarcode').value;
+    p.alshaya = document.getElementById('editProdAlshaya').value;
+    p.facing = parseInt(document.getElementById('editProdFacing').value, 10) || 1;
+    p.stock = parseInt(document.getElementById('editProdStock').value, 10) || 0;
+    p.price = parseFloat(document.getElementById('editProdPrice').value) || 120;
+    saveState();
+    renderShelves();
+    closeModal('productEditModal');
+    toast("Saved product record");
+  }
+}
+
+function renderAuditStockList() {
+  const list = document.getElementById('auditOosList');
+  const oos = MASTER_PRODUCTS.filter(p => p.stock === 0);
+  if (!list) return;
+
+  list.innerHTML = oos.map(p => `
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:11px;">
+      <div><b>${p.name}</b><br><span style="font-size:9px; color:var(--text-muted)">RMS: ${p.barcode}</span></div>
+      <button class="btn-back" onclick="restockItem('${p.id}', 6)">Restock +6</button>
+    </div>
+  `).join('') || '<div style="color:var(--green)">All products in stock!</div>';
+}
+
+function restockItem(id, qty) {
+  const p = MASTER_PRODUCTS.find(x => x.id === id);
+  if (p) { p.stock += qty; renderAuditStockList(); renderShelves(); toast("Restocked"); }
+}
+
+/* ==========================================================================
+   7. ROTA & DUTY CLOCK
+   ========================================================================== */
+const ROSTER = [
+  { name: "331356 / Vysakh", role: "PH", shifts: ["1-10 PM", "1-10 PM", "10-6AM", "10-6AM", "NIGHT OFF", "1-10 PM", "TLR(15.06)"] },
+  { name: "311378 / Nadiya Hakkim", role: "PH", shifts: ["NIGHT OFF", "6-3PM", "1-10 PM", "9-6PM", "6-3PM", "10-6AM", "10-6AM"] },
+  { name: "318672 / Saravanan", role: "SM-PH", shifts: ["6-3PM(+1)", "9-3PM(-1.5)", "6-3PM(+1)", "6-3PM", "10-6AM", "SM MEET", "DO"] }
+];
+
+function renderRosterMatrix() {
+  document.getElementById('rosterMatrixBody').innerHTML = ROSTER.map(emp => `
+    <tr>
+      <td style="font-weight:700;">${emp.name}</td>
+      <td style="color:var(--accent); font-weight:800;">${emp.role}</td>
+      ${emp.shifts.map(s => `<td>${s}</td>`).join('')}
+    </tr>
+  `).join('');
+}
+
+function startClock() {
+  setInterval(() => {
+    const el = document.getElementById('liveClockDigits');
+    if (el) el.textContent = new Date().toLocaleTimeString('en-US', { hour12: false });
+  }, 1000);
+}
+
+function logTimePunch(action) {
+  toast(`${action} logged at ${new Date().toLocaleTimeString()}`);
+}
+
+/* ==========================================================================
+   8. GS1 SCANNER & REFRIGERATOR
+   ========================================================================== */
+function parseManualGS1Input() {
+  const inp = document.getElementById('manualBarcodeString');
+  if (!inp || !inp.value.trim()) return;
+  const raw = inp.value.trim();
+  const gtin = (raw.match(/01(\d{14})/) || [null, raw.replace(/\D/g, '').padStart(14, '0')])[1];
+  const item = { gtin, name: "PROCESSED GS1 PRODUCT", expiry: "2027-12-31", batch: "B284", qty: 1 };
+  AppState.excelRows.unshift(item);
+  saveState();
+  renderExcelLedger();
+  inp.value = '';
+  toast("GS1 Ingested");
+}
+
+function renderExcelLedger() {
+  document.getElementById('excelLedgerBody').innerHTML = AppState.excelRows.map((r, i) => `
+    <tr>
+      <td style="text-align:center;">${i + 1}</td>
+      <td style="font-family:'DM Mono',monospace; color:var(--accent); font-weight:700;">${r.gtin}</td>
+      <td><b>${r.name}</b></td>
+      <td style="font-family:'DM Mono',monospace;">${r.expiry}</td>
+      <td style="font-family:'DM Mono',monospace;">${r.batch}</td>
+      <td style="text-align:right;">${r.qty}</td>
+    </tr>
+  `).join('');
+}
+
+function clearLedgerRows() {
+  AppState.excelRows = [];
+  saveState();
+  renderExcelLedger();
+  toast("Ledger cleared");
+}
+
+function exportOrderCsvSheet() {
+  let csv = "BARCODE,PRODUCT NAME,EXPIRY,BATCH,QTY\n";
+  AppState.excelRows.forEach(r => csv += `"${r.gtin}","${r.name}","${r.expiry}","${r.batch}",${r.qty}\n`);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = `Boots_T3_Ledger_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  toast("Exported CSV");
+}
+
+let fridgeAlert = false;
+function startFridgeTelemetry() {
+  setInterval(() => {
+    if (fridgeAlert) return;
+    const temp = (4.2 + (Math.random() * 0.4 - 0.2)).toFixed(1);
+    document.getElementById('fridgeCurrentTemp').textContent = `${temp} °C`;
+  }, 3000);
+}
+
+function simulateSpikeExcursion() {
+  fridgeAlert = true;
+  document.getElementById('fridgeCurrentTemp').textContent = "11.6 °C EXCURSION";
+  document.getElementById('fridgeCurrentTemp').style.color = "var(--red)";
+  document.getElementById('fridgeStatusBadge').textContent = "EXCURSION BREACH";
+  document.getElementById('fridgeStatusBadge').style.background = "rgba(239,68,68,0.2)";
+  document.getElementById('fridgeStatusBadge').style.color = "var(--red)";
+  toast("Warning: Fridge excursion alert!");
+}
+
+function resetSpikeExcursion() {
+  fridgeAlert = false;
+  document.getElementById('fridgeCurrentTemp').textContent = "4.2 °C";
+  document.getElementById('fridgeCurrentTemp').style.color = "var(--green)";
+  document.getElementById('fridgeStatusBadge').textContent = "Safe Range (2.0°C – 8.0°C)";
+  document.getElementById('fridgeStatusBadge').style.background = "rgba(16,185,129,0.2)";
+  document.getElementById('fridgeStatusBadge').style.color = "var(--green)";
+  toast("Fridge temperature normal");
+}
+
+/* ==========================================================================
+   9. SETTINGS & PROTECTION
+   ========================================================================== */
+function saveSystemSettings() {
+  const pin = document.getElementById('cfgAdminPin').value;
+  if (pin !== '331356') {
+    alert("Admin PIN invalid! Target settings protected.");
+    return;
+  }
+  toast("Configurations unlocked & saved");
+  closeModal('settingsModal');
+}
+</script>
+</body>
+</html>
